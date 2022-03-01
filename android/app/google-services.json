@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "555956113257",
+    "project_id": "sparktvshowreminder",
+    "storage_bucket": "sparktvshowreminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555956113257:android:a080ac6b8b26042d3977f8",
+        "android_client_info": {
+          "package_name": "com.spark.spark_tv_shows"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555956113257-pb6m1101q77thvq542fs00qnjp51oab1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaGyJqMPw3eLOA4-12L0YckMveQfSRQJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555956113257-pb6m1101q77thvq542fs00qnjp51oab1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
