@@ -2,17 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/pages/tv_show.dart';
 
+import 'config/firebase_config.dart';
+
 Future<void> main() async {
   //Initialized firebase to the project
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: "",
-      appId: "1:555956113257:android:a080ac6b8b26042d3977f8",
-      messagingSenderId: "555956113257",
-      projectId: "555956113257",
-    ),
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseConfig.platformOptions);
   // await Firebase.initializeApp();
   runApp(const MyApp());
 }
