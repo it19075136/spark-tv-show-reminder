@@ -11,10 +11,16 @@ class AddTvShow extends StatelessWidget {
 
   CollectionReference ref = FirebaseFirestore.instance.collection('shows');
 
+  AddTvShow({Key? key}) : super(key: key);
+
+  final List<String> channels = ['Sirasa', 'Derana', 'ITN'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
+      appBar: AppBar(
+        title: const Text('Add tv show'),
+        actions: [
         MaterialButton(onPressed: (){
           ref.add({
             'tvShowName': tvShowName.text,
@@ -23,10 +29,10 @@ class AddTvShow extends StatelessWidget {
             // 'date': date.text,
             // 'channel': channel.text,
           }).whenComplete(() {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TvShow()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const TvShow()));
           });
         },
-        child: Text(
+        child: const Text(
           "save",
         ),
         )
@@ -34,26 +40,37 @@ class AddTvShow extends StatelessWidget {
       body: Container(
         child: Column(
           children: [
+            // DropdownButtonFormField(
+            //   items: channels.map(
+            //     (channel) => DropdownMenuItem(
+            //       child: Text(channel)
+            //     )).toList(), 
+            //   onChanged: 
+            // ),
+            const SizedBox(
+              height: 10,
+            ),
             Container(
-              decoration: BoxDecoration(border: Border.all()),
+              // decoration: BoxDecoration(border: Border.all()),
               child: TextField(
                 controller:  tvShowName,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'TV Show Name',
+                  label: Text('Tv Show Name')
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Expanded(
               child: Container(
-              decoration: BoxDecoration(border: Border.all()),
+              // decoration: BoxDecoration(border: Border.all()),
               child: TextField(
                 controller:  description,
                 expands: true,
                 maxLines: null,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Description',
                 ),
               ),
