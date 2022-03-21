@@ -47,10 +47,6 @@ class AddTvShow extends StatelessWidget {
             //     )).toList(), 
             //   onChanged: 
             // ),
-            DropdownButton(items: channels.map(
-                (channel) => DropdownMenuItem(
-                  child: Text(channel)
-                )).toList(),)
             const SizedBox(
               height: 10,
             ),
