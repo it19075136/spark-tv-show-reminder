@@ -5,11 +5,12 @@ import 'package:spark_tv_shows/pages/channels.dart';
 class AddChannel extends StatelessWidget {
   TextEditingController name = TextEditingController();
   TextEditingController description  = TextEditingController();
-  // const AddChannel({Key? key}) : super(key: key);
+  // const
 
   CollectionReference ref = FirebaseFirestore.instance.collection("channels");
   final _formKey = GlobalKey<FormState>();
 
+  AddChannel({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +93,10 @@ class AddChannel extends StatelessWidget {
                         ),
                         MaterialButton(onPressed: (){
                           ref.add({
-                            "name":name,
-                            "description":description
+                            "name":name.text,
+                            "description":description.text
                           }).whenComplete(() => {
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels()))
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const Channels()))
                           });
                         },
                           child: Text("Save"),

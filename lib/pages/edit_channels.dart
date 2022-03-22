@@ -11,6 +11,7 @@ class EditChannel extends StatefulWidget {
 }
 
 class _EditChannelState extends State<EditChannel> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController name = TextEditingController();
   TextEditingController description = TextEditingController();
 
@@ -26,39 +27,96 @@ class _EditChannelState extends State<EditChannel> {
       appBar: AppBar(
         title: Center(child: Text("Edit Channel"),
         ),
-        actions: [
-          MaterialButton(onPressed: (){
-            widget.docid.reference.update({
-              "name":name.text,
-              "description":description.text
-            }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
-          },
-          child: Text("Edit"),)
-        
+        // actions: [
+        //   MaterialButton(onPressed: (){
+        //     widget.docid.reference.update({
+        //       "name":name.text,
+        //       "description":description.text
+        //     }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
+        //   },
+        //   child: Text("Edit"),)
+        //
+        // ],
+      ),
+      body:Stack(
+        children: [
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 300,
+                child: Image.asset("images/channel.jpg"),
+              )
+          ),
+          Positioned(
+            top: 200,
+            right: 10,
+            left: 10,
+            child: Container(
+              // height: 00,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 15,
+                      spreadRadius: 5
+                  )
+                  ]
+              ),
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: name,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "Channel Name",
+                              hintText: "Channel Name",
+                              icon: Icon(Icons.connected_tv),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: description,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: "Description",
+                                labelText: "Description",
+                                icon: Icon(Icons.description)
+
+                            ),
+                          ),
+                        ),
+                        MaterialButton(onPressed: (){
+                          widget.docid.reference.update({
+                            "name":name.text,
+                            "description":description.text
+                          }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
+                        },
+                            child: Text("Edit"),
+                            color: Colors.blue),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-      body:Container(
-        child: Column(
-          children: [
-             TextField(
-               controller: name,
-               decoration: InputDecoration(
-                 hintText: "Channel Name"
-               ),
-             ),
-            SizedBox(
-              height: 10,
-            ),
-            TextField(
-              controller:description ,
-              decoration: InputDecoration(
-                hintText: "description"
-              ),
-            )
-          
-          ],
-        ),
-      ) ,
     );
   }
 }
