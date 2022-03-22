@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/constants.dart';
-import 'package:spark_tv_shows/pages/services/auth/firebaseAuth.dart';
-import 'package:spark_tv_shows/pages/services/user/userServices.dart';
+import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
+import 'package:spark_tv_shows/services/user/userServices.dart';
 import 'package:spark_tv_shows/pages/welcome/components/body.dart';
 
 class Welcome extends StatefulWidget {

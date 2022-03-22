@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
-import 'package:spark_tv_shows/pages/services/auth/firebaseAuth.dart';
+import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
