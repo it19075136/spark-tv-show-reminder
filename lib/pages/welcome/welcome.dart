@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/constants.dart';
@@ -13,6 +15,7 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  final _key = GlobalKey<FormState>();
 
   String userId = "";
   FirebaseAuthentication _auth = FirebaseAuthentication();
@@ -29,8 +32,11 @@ class _WelcomeState extends State<Welcome> {
   fetchUserData() async {
     User? getUser = FirebaseAuth.instance.currentUser;
     userId = getUser!.uid;
-    dynamic user = await UserServices().getLoggedInUser(userId);
-    print(user.toString());
+    LinkedHashMap<String, dynamic> user =
+        await UserServices().getLoggedInUser(userId);
+    _nameController.value = TextEditingValue(text: user["name"]);
+    _phoneController.value = TextEditingValue(text: user["phone"]);
+    ;
   }
 
   @override
@@ -41,23 +47,18 @@ class _WelcomeState extends State<Welcome> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-              onPressed: (){
+              onPressed: () {
                 openDialogBox(context);
               },
-              icon: const Icon(
-                  Icons.account_circle
-              )
-          ),
+              icon: const Icon(Icons.account_circle)),
           IconButton(
               onPressed: () async {
-                await _auth.logout().then((value) =>
-                  Navigator.of(context).pop(true)
-                ).catchError((err) => print(err));
+                await _auth
+                    .logout()
+                    .then((value) => Navigator.of(context).pop(true))
+                    .catchError((err) => print(err));
               },
-              icon: const Icon(
-                Icons.login
-              )
-          ),
+              icon: const Icon(Icons.login)),
         ],
       ),
       body: Body(),
@@ -66,34 +67,63 @@ class _WelcomeState extends State<Welcome> {
   }
 
   openDialogBox(BuildContext context) {
-    return showDialog(context: context, builder: (context){
-      return AlertDialog(
-          title: const Text('User Profile'),
-          content:  Container(
-            height: 150,
-            child: Column(
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(hintText: 'Name'),
-                ),
-                TextField(
-                  controller: _phoneController,
-                  decoration: InputDecoration(hintText: 'Phone'),
-                )
-              ],
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('User Profile'),
+            content: Form(
+              key: _key,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Name cannot be empty';
+                      } else
+                        return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Name',
+                        labelStyle: TextStyle(color: kPrimaryColor)),
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _phoneController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Phone cannot be empty';
+                      } else
+                        return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Phone',
+                        labelStyle: TextStyle(color: kPrimaryColor)),
+                    style: TextStyle(color: Colors.black),
+                  )
+                ],
+              ),
             ),
-          ),
-          actions: [
-          IconButton(onPressed: () async {
-            await UserServices().updateUser(userId, _nameController.text, _phoneController.text);
-            Navigator.pop(context);
-            }, icon: const Icon(Icons.done)),
-          IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.clear))
-      ],
-      );
-    });
+            actions: [
+              IconButton(
+                  onPressed: () async {
+                    if (_key.currentState!.validate()) {
+                      await UserServices().updateUser(
+                          userId, _nameController.text, _phoneController.text);
+                      await fetchUserData();
+                      Navigator.pop(context);
+                    }
+                  },
+                  icon: const Icon(Icons.done)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.clear))
+            ],
+          );
+        });
   }
-
 }
-  
