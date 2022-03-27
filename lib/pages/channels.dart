@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/pages/add_channel.dart';
 import 'package:spark_tv_shows/pages/edit_channels.dart';
-import 'package:spark_tv_shows/pages/tv_show.dart';
+import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
+
 
 class Channels extends StatefulWidget {
   const Channels({Key? key}) : super(key: key);
@@ -51,7 +52,7 @@ class _ChannelsState extends State<Channels> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => TvShow(
+                        builder: (_) => TvShowList(
                           // docid: snapshot.data!.docs[index],
                         )));
               } ,

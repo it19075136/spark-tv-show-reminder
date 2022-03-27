@@ -18,6 +18,7 @@ class _EditTvShoState extends State<EditTvShow> {
   void initState() {
     tvShowName = TextEditingController(text: widget.docid.get('tvShowName'));
     description = TextEditingController(text: widget.docid.get('description'));
+    DateTime showDate = widget.docid.get('showDate');
     super.initState();
   }
 
@@ -34,8 +35,8 @@ class _EditTvShoState extends State<EditTvShow> {
               // 'date': date.text,
               // 'channel': channel.text,
             }).whenComplete(() {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => TvShowList()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => TvShowList()));
             });
           },
           child: const Text("Save"),
@@ -43,8 +44,8 @@ class _EditTvShoState extends State<EditTvShow> {
         MaterialButton(
           onPressed: () {
             widget.docid.reference.delete().whenComplete(() {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => TvShowList()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => TvShowList()));
             });
           },
           child: const Text("delete"),
