@@ -42,7 +42,18 @@ class _TvShowListState extends State<TvShowList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _getFAB(),
+      floatingActionButton: Visibility(
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (_) => AddTvShow()));
+          },
+          child: const Icon(
+            Icons.add,
+          ),
+        ),
+        visible: _userType.text == "admin" ? true : false,
+      ),
       appBar: AppBar(
         title: const Text('Tv Shows'),
       ),
@@ -115,7 +126,7 @@ class _TvShowListState extends State<TvShowList> {
   }
 
   Widget _getFAB() {
-    if ( _userType.text ==  "admin") {
+    if (_userType.text == "admin") {
       return FloatingActionButton(
         onPressed: () {
           Navigator.pushReplacement(
