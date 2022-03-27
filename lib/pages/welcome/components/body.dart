@@ -23,20 +23,20 @@ class Body extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/tvShows');
-                },
-                child: Text('Tv Shows'),
-                style: TextButton.styleFrom(
-                    primary: kPrimaryLightColor,
-                    backgroundColor: kPrimaryColor)),
-            SizedBox(height: 10),
+            // TextButton(
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, '/tvShows');
+            //     },
+            //     child: const Text('Tv Shows'),
+            //     style: TextButton.styleFrom(
+            //         primary: kPrimaryLightColor,
+            //         backgroundColor: kPrimaryColor)),
+            // const SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/channels');
               },
-              child: Text('Channels'),
+              child: const Text('View channels'),
               style: TextButton.styleFrom(
                   primary: kPrimaryLightColor, backgroundColor: kPrimaryColor),
             )
