@@ -1,9 +1,12 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/pages/add_channel.dart';
 import 'package:spark_tv_shows/pages/edit_channels.dart';
+import 'package:spark_tv_shows/services/user/userServices.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
-
 
 class Channels extends StatefulWidget {
   const Channels({Key? key}) : super(key: key);
@@ -13,19 +16,40 @@ class Channels extends StatefulWidget {
 }
 
 class _ChannelsState extends State<Channels> {
-
+  String userId = "";
+  String type ="";
+  // TextEditingController _typeController = TextEditingController();
   final Stream<QuerySnapshot> _chaneelStream = FirebaseFirestore.instance.collection("channels").snapshots();
 
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+  fetchUserData() async {
+    User? getUser = FirebaseAuth.instance.currentUser;
+    userId = getUser!.uid;
+    LinkedHashMap<String, dynamic> user = await UserServices().getLoggedInUser(userId);
+    // _typeController.value = TextEditingValue(text: user["type"]);
+    setState(() {
+      type = user["type"];
+
+    });
+    // _phoneController.value = TextEditingValue(text: user["phone"]);
+    ;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.black,
-      floatingActionButton: FloatingActionButton(onPressed: (){
+      floatingActionButton: type == 'admin' ? FloatingActionButton(onPressed: (){
          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> AddChannel()));
       },
        child: Icon(
          Icons.add
-       ),),
+       ),
+      ):null,
       appBar: AppBar(
         title: Center(child: Text("Channels"),
         ),
@@ -111,7 +135,10 @@ class _ChannelsState extends State<Channels> {
                     //       fontSize: 20
                     //   ),
                     // ),
-                    MaterialButton(onPressed: (){
+                    // if(){
+                    //
+                    // }
+                    if (type == 'admin') MaterialButton(onPressed: (){
                       Navigator.push(context, MaterialPageRoute(builder: (_)=> EditChannel(docid: snapshot.data!.docs[index],)));
                     },child:
                     Text("Edit"),
