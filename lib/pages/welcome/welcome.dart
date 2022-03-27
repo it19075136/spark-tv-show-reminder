@@ -94,13 +94,13 @@ class _WelcomeState extends State<Welcome> {
               },
             ),
             ListTile(
-              title: const Text('My Tv Shows'),
+              title: const Text('Subscribed Tv Shows'),
               onTap: () {
-                Navigator.pushNamed(context, "/tvShows");
+                Navigator.pushNamed(context, "/myShows");
               },
             ),
             ListTile(
-              title: const Text('My Channels'),
+              title: const Text('Subscribed Channels'),
               onTap: () {
                 Navigator.pushNamed(context, "/channels");
               },
