@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spark_tv_shows/constants.dart';
 import './background.dart';
 
@@ -13,13 +14,13 @@ class Body extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text(
+            Text(
               "WELCOME TO SPARK TV SHOWS",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 24,
-                  backgroundColor: kPrimaryColor),
+              style: GoogleFonts.robotoSlab(
+                fontSize: 23.0,
+                color: kPrimaryColor,
+                fontWeight: FontWeight.bold
+              ),
             ),
             const SizedBox(height: 20),
             TextButton(
