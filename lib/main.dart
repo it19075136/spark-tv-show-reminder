@@ -4,7 +4,7 @@ import 'package:spark_tv_shows/pages/channels.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
 import 'package:spark_tv_shows/pages/signUp/register.dart';
-import 'package:spark_tv_shows/pages/tv_show.dart';
+import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 import 'package:spark_tv_shows/pages/welcome/welcome.dart';
 
 import 'config/firebase_config.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/welcome': (context) => const Welcome(),
-        '/tvShows': (context) => const TvShow(),
+        '/tvShows': (context) =>  TvShowList(),
         '/channels': (context) => const Channels()
       },
       title: 'Spark TV Shows',
