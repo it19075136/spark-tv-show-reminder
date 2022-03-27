@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:spark_tv_shows/pages/channels.dart';
 
 class EditChannel extends StatefulWidget {
@@ -100,14 +101,48 @@ class _EditChannelState extends State<EditChannel> {
                             ),
                           ),
                         ),
-                        MaterialButton(onPressed: (){
-                          widget.docid.reference.update({
-                            "name":name.text,
-                            "description":description.text
-                          }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
-                        },
-                            child: Text("Edit"),
-                            color: Colors.blue),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            MaterialButton(onPressed: (){
+                              widget.docid.reference.update({
+                                "name":name.text,
+                                "description":description.text
+                              }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
+                            },
+                                child: Text("Edit"),
+                                color: Colors.blue
+                            ),
+                            Container(
+                              decoration: BoxDecoration(color: Colors.blue),
+                              child: IconButton(
+                                onPressed: (){
+                                  widget.docid.reference.delete().whenComplete(() {
+                                    Navigator.pushReplacement(
+                                        context, MaterialPageRoute(builder: (_) => const Channels()));
+                                  });
+                                },
+                                icon: Icon(Icons.delete),
+                                color: Colors.red,
+
+                              ),
+                            )
+                          ],
+                        )
+
+                        // MaterialButton(onPressed: (){
+                        //   widget.docid.reference.update({
+                        //     "name":name.text,
+                        //     "description":description.text
+                        //   }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
+                        // },
+                        //
+                        //     child: Text("Delete"),
+                        //     color: Colors.red
+                        // ),
+
+
+
                       ],
                     ),
                   ),
