@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/welcome': (context) => const Welcome(),
-        '/tvShows': (context) =>  TvShowList(),
+        // '/tvShows': (context) =>  const TvShowList(),
         '/channels': (context) => const Channels()
       },
       title: 'Spark TV Shows',

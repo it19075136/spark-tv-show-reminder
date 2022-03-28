@@ -15,7 +15,6 @@ class _AddTvShowState extends State<AddTvShow> {
 
   TextEditingController _tvShowName = TextEditingController();
   TextEditingController _description = TextEditingController();
-  TextEditingController _channel = TextEditingController();
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
   
@@ -37,8 +36,10 @@ class _AddTvShowState extends State<AddTvShow> {
               'showDate': setDateTime(_showDate, _showTime),
               // 'channel': channel.text,
             }).whenComplete(() {
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (_) => TvShowList()));
+              // Navigator.pushReplacement(
+              //     context, MaterialPageRoute(builder: (_) => TvShowList(
+              //           channelID
+              //     )));
             });
           },
           child: const Text(
@@ -51,13 +52,6 @@ class _AddTvShowState extends State<AddTvShow> {
           child: Form(
             child: Column(
               children: [
-                // DropdownButtonFormField(
-                //   items: channels.map(
-                //     (channel) => DropdownMenuItem(
-                //       child: Text(channel)
-                //     )).toList(),
-                //   onChanged:
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Column(children: [

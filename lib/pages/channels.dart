@@ -49,12 +49,12 @@ class _ChannelsState extends State<Channels> {
               itemBuilder: (_,index){
             return GestureDetector(
               onTap:() {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => TvShowList(
-                          // docid: snapshot.data!.docs[index],
-                        )));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => TvShowList(
+                //           channelID: snapshot.data!.docs[index]
+                //         )));
               } ,
 
               child: Card(

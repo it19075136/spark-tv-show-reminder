@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_tv_shows/pages/tvShow/addTvShow.dart';
+import 'package:spark_tv_shows/pages/tvShow/editTvShow.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
-import '../editTvShow2.dart';
 
-class TvShowList extends StatefulWidget {
+class TvShowList extends StatefulWidget { 
   TvShowList({Key? key}) : super(key: key);
 
   @override
@@ -17,13 +17,14 @@ class _TvShowListState extends State<TvShowList> {
   final CollectionReference userRef =
       FirebaseFirestore.instance.collection('user');
   final Stream<QuerySnapshot> _userStream =
-      FirebaseFirestore.instance.collection('shows').snapshots();
+      FirebaseFirestore.instance.collection('shows').where('channelID', isEqualTo: 'channelID').snapshots();
   bool _subscribed = false;
 
   //Get Logged in User
   String userId = "";
   TextEditingController _userType = TextEditingController();
   TextEditingController _userName = TextEditingController();
+
 
   @override
   void initState() {
@@ -42,7 +43,17 @@ class _TvShowListState extends State<TvShowList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _getFAB(),
+      floatingActionButton: _userType.text == 'admin' ? FloatingActionButton(
+        onPressed: () {
+          // Navigator.pushReplacement(
+          //     context, MaterialPageRoute(builder: (_) => AddTvShow(
+          //       channelID: channelID,
+          //     )));
+        },
+        child: const Icon(
+          Icons.add,
+        ),
+      ):null,
       appBar: AppBar(
         title: const Text('Tv Shows'),
       ),
@@ -114,21 +125,23 @@ class _TvShowListState extends State<TvShowList> {
     );
   }
 
-  Widget _getFAB() {
-    if ( _userType.text ==  "admin") {
-      return FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => AddTvShow()));
-        },
-        child: const Icon(
-          Icons.add,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
+  // Widget _getFAB() {
+  //   if ( _userType.text ==  "admin") {
+  //     return FloatingActionButton(
+  //       onPressed: () {
+  //         // Navigator.pushReplacement(
+  //         //     context, MaterialPageRoute(builder: (_) => AddTvShow(
+  //         //       channelID: channelID,
+  //         //     )));
+  //       },
+  //       child: const Icon(
+  //         Icons.add,
+  //       ),
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
 
   Future addTvToUser(String uid, dynamic tvShowId) async {
     try {
