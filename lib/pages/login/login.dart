@@ -1,6 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
 import 'package:spark_tv_shows/pages/signUp/register.dart';
@@ -15,10 +14,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _key = GlobalKey<FormState>();
 
+  bool _obscureText = true;
+
   final FirebaseAuthentication _auth = FirebaseAuthentication();
 
-  TextEditingController _emailContoller = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class _LoginState extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Login',
                   style: TextStyle(
                     color: kPrimaryColor,
@@ -39,14 +40,14 @@ class _LoginState extends State<Login> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 TextButton(
-                    child: Text('Not registerd? Sign up'),
+                    child: const Text('Not registered? Sign up'),
                     onPressed: () {
                       Navigator.of(context).push(
-                        CupertinoPageRoute(
+                        MaterialPageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => Register(),
+                          builder: (context) => const Register(),
                         ),
                       );
                     },
@@ -54,51 +55,50 @@ class _LoginState extends State<Login> {
                         primary: kPrimaryColor,
                         textStyle: const TextStyle(
                             fontStyle: FontStyle.italic,
-                            decoration:   TextDecoration.underline
-                        )
-                    )
-                ),
+                            decoration: TextDecoration.underline))),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       TextFormField(
-                        controller: _emailContoller,
+                        controller: _emailController,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Email cannot be empty';
-                          } else
+                            return 'Email is required!';
+                          } else {
                             return null;
+                          }
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             labelText: 'Email',
                             labelStyle: TextStyle(color: kPrimaryColor)),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Password cannot be empty';
-                          } else
+                            return 'Password is required!';
+                          } else {
                             return null;
+                          }
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             labelText: 'Password',
                             labelStyle: TextStyle(color: kPrimaryColor)),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           TextButton(
-                            child: Text('Login'),
+                            child: const Text('Login'),
                             onPressed: () {
                               if (_key.currentState!.validate()) {
                                 login();
@@ -106,9 +106,18 @@ class _LoginState extends State<Login> {
                             },
                             style: TextButton.styleFrom(
                                 primary: kPrimaryLightColor,
-                                backgroundColor: kPrimaryColor
-                            ),
+                                backgroundColor: kPrimaryColor),
                           ),
+                          TextButton(
+                              child: const Text('Forgot password? Reset now'),
+                              onPressed: () {
+                                openDialogBox(context);
+                              },
+                              style: TextButton.styleFrom(
+                                  primary: kPrimaryColor,
+                                  textStyle: const TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      decoration: TextDecoration.underline))),
                         ],
                       ),
                     ],
@@ -122,14 +131,96 @@ class _LoginState extends State<Login> {
     );
   }
 
+  openDialogBox(BuildContext context) {
+    final _dialogKey = GlobalKey<FormState>();
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Reset your password'),
+            content: Form(
+              key: _dialogKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _emailController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Email is required!';
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: kPrimaryColor)),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text("Reset Password"),
+                onPressed: () async {
+                  if (_dialogKey.currentState!.validate()) {
+                    dynamic result =
+                        await _auth.resetPassword(_emailController.text);
+                    if (result == null) {
+                      Fluttertoast.showToast(
+                          msg: "Action failed, insert a correct email!",
+                          backgroundColor: Colors.redAccent,
+                          textColor: kPrimaryLightColor,
+                          gravity: ToastGravity.BOTTOM_RIGHT,
+                          webBgColor: "#d8392b",
+                          timeInSecForIosWeb: 2,
+                          toastLength: Toast.LENGTH_LONG);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Reset link sent! Check your mail",
+                          backgroundColor: Colors.greenAccent,
+                          textColor: kPrimaryLightColor,
+                          gravity: ToastGravity.BOTTOM_RIGHT,
+                          webBgColor: "#00cc00",
+                          timeInSecForIosWeb: 2,
+                          toastLength: Toast.LENGTH_LONG);
+                    }
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.clear))
+            ],
+          );
+        });
+  }
+
   void login() async {
-    dynamic result = await _auth.login(_emailContoller.text, _passwordController.text);
-    if(result == null){
-      print("Failed to login");
-    }
-    else {
-      print(result.toString());
-      _emailContoller.clear();
+    dynamic result =
+        await _auth.login(_emailController.text, _passwordController.text);
+    if (result == null) {
+      Fluttertoast.showToast(
+          msg: "Login failed!",
+          backgroundColor: Colors.redAccent,
+          textColor: kPrimaryLightColor,
+          gravity: ToastGravity.BOTTOM_RIGHT,
+          webBgColor: "#d8392b",
+          timeInSecForIosWeb: 2,
+          toastLength: Toast.LENGTH_LONG);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Login Successful!",
+          backgroundColor: Colors.green,
+          textColor: kPrimaryLightColor,
+          gravity: ToastGravity.BOTTOM_RIGHT,
+          webBgColor: "#00cc00",
+          timeInSecForIosWeb: 2,
+          toastLength: Toast.LENGTH_LONG);
+      _emailController.clear();
       _passwordController.clear();
       Navigator.pushNamed(context, '/welcome');
     }

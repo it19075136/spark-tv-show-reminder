@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
@@ -18,10 +19,10 @@ class _WelcomeState extends State<Welcome> {
   final _key = GlobalKey<FormState>();
 
   String userId = "";
-  FirebaseAuthentication _auth = FirebaseAuthentication();
+  final FirebaseAuthentication _auth = FirebaseAuthentication();
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   void initState() {
@@ -36,7 +37,6 @@ class _WelcomeState extends State<Welcome> {
         await UserServices().getLoggedInUser(userId);
     _nameController.value = TextEditingValue(text: user["name"]);
     _phoneController.value = TextEditingValue(text: user["phone"]);
-    ;
   }
 
   @override
@@ -56,12 +56,58 @@ class _WelcomeState extends State<Welcome> {
                 await _auth
                     .logout()
                     .then((value) => Navigator.of(context).pop(true))
-                    .catchError((err) => print(err));
+                    .catchError((err) => {
+                          Fluttertoast.showToast(
+                              msg: "Logout failed!",
+                              backgroundColor: Colors.redAccent,
+                              textColor: kPrimaryLightColor,
+                              gravity: ToastGravity.BOTTOM_RIGHT,
+                              webBgColor: "#d8392b",
+                              timeInSecForIosWeb: 2,
+                              toastLength: Toast.LENGTH_LONG)
+                        });
               },
               icon: const Icon(Icons.login)),
         ],
       ),
-      body: Body(),
+      body: const Center(child: Body()),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+              ),
+              child: Text(
+                'SPARK TV SHOWS',
+                style: TextStyle(
+                  color: kPrimaryLightColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('My Reminders'),
+              onTap: () {
+                Navigator.pushNamed(context, "/welcome");
+              },
+            ),
+            ListTile(
+              title: const Text('Subscribed Tv Shows'),
+              onTap: () {
+                Navigator.pushNamed(context, "/myShows");
+              },
+            ),
+            ListTile(
+              title: const Text('Subscribed Channels'),
+              onTap: () {
+                Navigator.pushNamed(context, "/myChannels");
+              },
+            )
+          ],
+        ),
+      ),
       backgroundColor: Colors.black,
     );
   }
@@ -80,28 +126,30 @@ class _WelcomeState extends State<Welcome> {
                     controller: _nameController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Name cannot be empty';
-                      } else
+                        return 'Name is required!';
+                      } else {
                         return null;
+                      }
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Name',
                         labelStyle: TextStyle(color: kPrimaryColor)),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _phoneController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Phone cannot be empty';
-                      } else
+                        return 'Phone is required!';
+                      } else {
                         return null;
+                      }
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Phone',
                         labelStyle: TextStyle(color: kPrimaryColor)),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   )
                 ],
               ),
@@ -110,9 +158,31 @@ class _WelcomeState extends State<Welcome> {
               IconButton(
                   onPressed: () async {
                     if (_key.currentState!.validate()) {
-                      await UserServices().updateUser(
+                      dynamic result = await UserServices().updateUser(
                           userId, _nameController.text, _phoneController.text);
-                      await fetchUserData();
+                      if(result == "error"){
+                        Fluttertoast.showToast(
+                            msg: "Profile update failed!",
+                            backgroundColor: Colors.redAccent,
+                            textColor: kPrimaryLightColor,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                            webBgColor: "#d8392b",
+                            timeInSecForIosWeb: 2,
+                            toastLength: Toast.LENGTH_LONG
+                        );
+                      }
+                      else{
+                        Fluttertoast.showToast(
+                            msg: "Update Successful!",
+                            backgroundColor: Colors.greenAccent,
+                            textColor: kPrimaryLightColor,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                            webBgColor: "#00cc00",
+                            timeInSecForIosWeb: 2,
+                            toastLength: Toast.LENGTH_LONG
+                        );
+                        await fetchUserData();
+                      }
                       Navigator.pop(context);
                     }
                   },

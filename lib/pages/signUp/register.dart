@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
 import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
@@ -18,7 +19,7 @@ class _RegisterState extends State<Register> {
     final FirebaseAuthentication _auth = FirebaseAuthentication();
 
     final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _emailContoller = TextEditingController();
+    final TextEditingController _emailController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
     final TextEditingController _phoneController = TextEditingController();
 
@@ -68,7 +69,7 @@ class _RegisterState extends State<Register> {
                           controller: _nameController,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Name cannot be empty';
+                              return 'Name is required!';
                             } else {
                               return null;
                             }
@@ -84,10 +85,10 @@ class _RegisterState extends State<Register> {
                         ),
                         const SizedBox(height: 30),
                         TextFormField(
-                          controller: _emailContoller,
+                          controller: _emailController,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Email cannot be empty';
+                              return 'Email is required!';
                             } else {
                               return null;
                             }
@@ -105,7 +106,7 @@ class _RegisterState extends State<Register> {
                           obscureText: true,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Password cannot be empty';
+                              return 'Password is required!';
                             } else {
                               return null;
                             }
@@ -122,7 +123,7 @@ class _RegisterState extends State<Register> {
                           controller: _phoneController,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Phone cannot be empty';
+                              return 'Phone is required!';
                             } else {
                               return null;
                             }
@@ -136,7 +137,7 @@ class _RegisterState extends State<Register> {
                         ),
                         const SizedBox(height: 30),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             TextButton(
                               child: const Text('Sign Up'),
@@ -150,6 +151,7 @@ class _RegisterState extends State<Register> {
                                   backgroundColor: kPrimaryColor
                               ),
                             ),
+                            const SizedBox(width: 10),
                             TextButton(
                               child: const Text('Cancel'),
                               onPressed: () {
@@ -174,15 +176,31 @@ class _RegisterState extends State<Register> {
     }
 
   void insertUser() async {
-      dynamic result = await _auth.insertUser(_nameController.text, _emailContoller.text, _passwordController.text, _phoneController.text, 'user');
+      dynamic result = await _auth.insertUser(_nameController.text, _emailController.text, _passwordController.text, _phoneController.text, 'user');
       if(result == null) {
-        print("Invalid credentials");
+        Fluttertoast.showToast(
+            msg: "Error registering user!",
+            backgroundColor: Colors.redAccent,
+            textColor: kPrimaryLightColor,
+            gravity: ToastGravity.BOTTOM_RIGHT,
+            webBgColor: "#d8392b",
+            timeInSecForIosWeb: 2,
+            toastLength: Toast.LENGTH_LONG
+        );
       }
       else {
-        print(result.toString());
+        Fluttertoast.showToast(
+            msg: "Registration Successful!",
+            backgroundColor: Colors.greenAccent,
+            textColor: kPrimaryLightColor,
+            gravity: ToastGravity.BOTTOM_RIGHT,
+            webBgColor: "#00cc00",
+            timeInSecForIosWeb: 2,
+            toastLength: Toast.LENGTH_LONG
+        );
         _nameController.clear();
         _passwordController.clear();
-        _emailContoller.clear();
+        _emailController.clear();
         Navigator.pop(context);
       }
   }
