@@ -62,12 +62,9 @@ class _MyChannelsListState extends State<MyChannelsList> {
                           channelDataList[index]["image"],
                           width: 50,
                           height: 50,)));
-            } else {
-              return const Text("No Subscribed Channels",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center);
+            }
+            else {
+              return const Card();
             }
           }),
     );
