@@ -15,7 +15,6 @@ class MyChannelsList extends StatefulWidget {
 }
 
 class _MyChannelsListState extends State<MyChannelsList> {
-
   List channels = [];
   List channelDataList = [];
 
@@ -31,14 +30,17 @@ class _MyChannelsListState extends State<MyChannelsList> {
     dynamic result;
     LinkedHashMap<String, dynamic> user =
         await UserServices().getLoggedInUser(userId);
-    channels = user["channels"];
+    if (user["channels"] != null) {
+      channels = user["channels"];
+    }
     List channelData = [];
     for (var element in channels) {
-      result = await ChannelServices().getChannelById(element.toString().trim());
+      result =
+          await ChannelServices().getChannelById(element.toString().trim());
       channelData.add(result);
     }
     setState(() {
-      channelDataList= channelData;
+      channelDataList = channelData;
     });
   }
 
@@ -46,23 +48,27 @@ class _MyChannelsListState extends State<MyChannelsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Subscribed Channels'),
-        backgroundColor: kPrimaryColor
-      ),
+          title: const Text('Subscribed Channels'),
+          backgroundColor: kPrimaryColor),
       body: ListView.builder(
           itemCount: channelDataList.length,
           itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text(channelDataList[index]["name"]),
-                subtitle: Text(channelDataList[index]["description"]),
-                leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      channelDataList[index]["image"]
-                    )
-                )
-              ),
-            );
+            if (channelDataList[index] != null) {
+              return Card(
+                  child: ListTile(
+                      title: Text(channelDataList[index]["name"]),
+                      subtitle: Text(channelDataList[index]["description"]),
+                      leading: Image.network(
+                          channelDataList[index]["image"],
+                          width: 50,
+                          height: 50,)));
+            } else {
+              return const Text("No Subscribed Channels",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center);
+            }
           }),
     );
   }
