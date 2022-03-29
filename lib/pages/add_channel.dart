@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spark_tv_shows/pages/channels.dart';
@@ -25,6 +26,7 @@ class _AddChannelState extends State<AddChannel> {
   final _formKey = GlobalKey<FormState>();
 
   File? image;
+  String? url;
 
   Future pickImage() async{
    final image= await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -149,16 +151,34 @@ class _AddChannelState extends State<AddChannel> {
                             ),
                           ),
                         ),
-                        MaterialButton(onPressed: (){
-                          ref.add({
-                            "name":name.text,
-                            "description":description.text,
-                            // "image":image
-                          }).whenComplete(() => {
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const Channels()))
-                          });
+                        MaterialButton(onPressed: () async {
+                          if(image != null){
+                            // print("image not null");
+                              final imageref = FirebaseStorage.instance.ref().child("channelsImages").child(name.text+'.jpg');
+                            // print("imageref");
+                              await imageref.putFile(image!);
+                            // print("putimagefile");
+                              url = await imageref.getDownloadURL();
+                            // print("url");
+                            // print(url);
+                              ref.add({
+                                "name":name.text,
+                                "description":description.text,
+                                "image":url
+                              }).whenComplete(() => {
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const Channels()))
+                              });
+                          }
+
                         },
-                          child: Text("Save"),
+                          child: Row(children: [
+                            Text("Save"),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(Icons.save)
+                          ],
+                          mainAxisSize: MainAxisSize.min,),
                         color: Colors.blue),
                       ],
                     ),
