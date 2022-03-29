@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/channels.dart';
 
 class EditChannel extends StatefulWidget {
@@ -22,6 +24,7 @@ class _EditChannelState extends State<EditChannel> {
   File? image;
   String? url;
   bool imageSet = false;
+  bool task =true ;
   @override
   void initState() {
     // TODO: implement initState
@@ -50,10 +53,10 @@ class _EditChannelState extends State<EditChannel> {
         title: Center(child: Text("Edit Channel"),
         ),
       ),
-      body:Stack(
+      body:task ?Stack(
         children: [
           Positioned(
-              top: 0,
+              top: 380,
               left: 0,
               right: 0,
               child: Container(
@@ -62,7 +65,7 @@ class _EditChannelState extends State<EditChannel> {
               )
           ),
           Positioned(
-            top: 200,
+            top: 0,
             right: 10,
             left: 10,
             child: Container(
@@ -140,30 +143,55 @@ class _EditChannelState extends State<EditChannel> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             MaterialButton(onPressed: ()async{
-                              if(imageSet == true){
-                                if(url != null){
-                                  // print("delete image 1");
-                                  final storageRef = await FirebaseStorage.instance.refFromURL(url!);
-                                  // print("delete image 2");
-                                  await  storageRef.delete();
-                                  // print("delete image");
-                                }
+                              if(description.text !=""  && name.text!=""){
+                                setState(() {
+                                  task = false;
+                                });
+                                CircularProgressIndicator();
+                                    if (imageSet == true) {
+                                      // if(url != null){
+                                      // print("delete image 1");
+                                      final storageRef = await FirebaseStorage
+                                          .instance
+                                          .refFromURL(url!);
+                                      // print("delete image 2");
+                                      await storageRef.delete();
+                                      // print("delete image");
+                                      // }
 
+                                      final imageref = FirebaseStorage.instance
+                                          .ref()
+                                          .child("channelsImages")
+                                          .child(name.text + '.jpg');
+                                      print("imageref1");
+                                      await imageref.putFile(image!);
+                                      print("imageref2");
 
-                                final imageref = FirebaseStorage.instance.ref().child("channelsImages").child(name.text+'.jpg');
-                                print("imageref1");
-                                await imageref.putFile(image!);
-                                print("imageref2");
-
-                                url = await imageref.getDownloadURL();
-                                print("imageref");
+                                      url = await imageref.getDownloadURL();
+                                      print("imageref");
+                                    }
+                                    widget.docid.reference.update({
+                                      "name": name.text,
+                                      "description": description.text,
+                                      "image": url,
+                                    }).whenComplete(() =>
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => Channels())));
+                                  }
+                              else{
+                                Fluttertoast.showToast(
+                                    msg:"Enter all details",
+                                    backgroundColor: Colors.red,
+                                    textColor: kPrimaryLightColor,
+                                    gravity: ToastGravity.BOTTOM,
+                                    webBgColor: "#d8392b",
+                                    timeInSecForIosWeb: 6,
+                                    toastLength: Toast.LENGTH_LONG
+                                );
                               }
-                              widget.docid.reference.update({
-                                "name":name.text,
-                                "description":description.text,
-                                "image": url,
-                              }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
-                            },
+                                },
                                 child: Row(
                                   children: [
                                     Text("Edit"),
@@ -178,6 +206,11 @@ class _EditChannelState extends State<EditChannel> {
                             ),
                             Container(
                                 child: MaterialButton(onPressed: ()async {
+                                  setState(() {
+                                    task = false;
+                                  });
+
+
                                   final storageRef = await FirebaseStorage.instance.refFromURL(url!);
                                   await  storageRef.delete();
                                   widget.docid.reference.delete().whenComplete(() {
@@ -234,7 +267,7 @@ class _EditChannelState extends State<EditChannel> {
             ),
           ),
         ],
-      ),
+      ):Center(child: CircularProgressIndicator()),
     );
   }
 }

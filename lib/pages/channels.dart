@@ -152,29 +152,38 @@ class _ChannelsState extends State<Channels> {
                     // if(){
                     //
                     // }
-                    type == 'admin' ? (MaterialButton(onPressed: (){
-                      // print("my,id");
-                      // print(snapshot.data!.docs[index].id);
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=> EditChannel(docid: snapshot.data!.docs[index],)));
-                    },child:
-                    Row(children: [
-                      Text("Edit"),
-                      SizedBox(
-                        width: 5,
+                    if(type == 'admin')(
+                      MaterialButton(onPressed: (){
+                        // print("my,id");
+                        // print(snapshot.data!.docs[index].id);
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> EditChannel(docid: snapshot.data!.docs[index],)));
+                      },child:
+                      Row(children: [
+                        Text("Edit"),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(Icons.edit)
+                      ],
+                        mainAxisSize: MainAxisSize.min,
                       ),
-                      Icon(Icons.edit)
-                    ],
-                      mainAxisSize: MainAxisSize.min,
-                    ),
-                        color: Colors.blue
-                      // Image.asset("name")
-                    )): (MaterialButton(onPressed: ()async{
+                          color: Colors.blue
+                        // Image.asset("name")
+                      )
+                    )
+                    else if(type == 'user')(
+                    MaterialButton(onPressed: ()async{
                       channelsList.contains(snapshot.data!.docs[index].id) ? (await FirebaseFirestore.instance.collection("user").doc(userId).update({"channels":FieldValue.arrayRemove([snapshot.data!.docs[index].id])}).then((value) => channelsList.remove(snapshot.data!.docs[index].id))):(await FirebaseFirestore.instance.collection("user").doc(userId).update({"channels": FieldValue.arrayUnion([snapshot.data!.docs[index].id])}).then((value) =>  channelsList.add(snapshot.data!.docs[index].id)));
-                      print("channelsList");
-                      print(channelsList);
+                      // print("channelsList");
+                      // print(channelsList);
                     },child: Text("Subscribe"),
                         color:channelsList.contains(snapshot.data!.docs[index].id)? Colors.grey:Colors.red
-                    )),
+                    )
+                    )
+                    else(
+                      CircularProgressIndicator()
+                      )
+                     ,
                   ],
                 ),
               ),
