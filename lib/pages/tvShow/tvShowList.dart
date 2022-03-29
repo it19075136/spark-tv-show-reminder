@@ -91,7 +91,10 @@ class _TvShowListState extends State<TvShowList> {
                             leading: const CircleAvatar(
                                 backgroundImage: NetworkImage(
                                     "https://images.unsplash.com/photo-1547721064-da6cfb341d50")),
-                            trailing: IconButton(
+                            trailing: Wrap(
+                              spacing: 12,
+                              children: <Widget>[
+                              IconButton(
                               icon: Icon(Icons.notifications,
                                   color: _subscribed == true
                                       ? Colors.red
@@ -103,7 +106,24 @@ class _TvShowListState extends State<TvShowList> {
                                       userId, snapshot.data!.docs[index]);
                                 });
                               },
-                            )),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.add_alarm,
+                                  color: _subscribed == true
+                                      ? Colors.red
+                                      : Colors.grey),
+                              onPressed: () {
+                                // setState(() {
+                                //   _subscribed = !_subscribed;
+                                //   addTvToUser(
+                                //       userId, snapshot.data!.docs[index]);
+                                // });
+                              },
+                            ),
+                              ],
+                            ) 
+                            
+                            ),
                       ),
                     ],
                   ),
