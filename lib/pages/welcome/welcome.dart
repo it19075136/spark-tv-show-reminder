@@ -102,7 +102,7 @@ class _WelcomeState extends State<Welcome> {
             ListTile(
               title: const Text('Subscribed Channels'),
               onTap: () {
-                Navigator.pushNamed(context, "/channels");
+                Navigator.pushNamed(context, "/myChannels");
               },
             )
           ],
