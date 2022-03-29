@@ -14,7 +14,13 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _key = GlobalKey<FormState>();
 
-  bool _obscureText = true;
+  bool _showPass = false;
+
+  @override
+  void initState() {
+    _showPass = false;
+    super.initState();
+  }
 
   final FirebaseAuthentication _auth = FirebaseAuthentication();
 
@@ -77,8 +83,9 @@ class _LoginState extends State<Login> {
                       ),
                       const SizedBox(height: 30),
                       TextFormField(
+                        keyboardType: TextInputType.text,
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: !_showPass,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Password is required!';
@@ -86,9 +93,20 @@ class _LoginState extends State<Login> {
                             return null;
                           }
                         },
-                        decoration: const InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: TextStyle(color: kPrimaryColor)),
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: const TextStyle(color: kPrimaryColor),
+                          suffixIcon: IconButton(
+                            icon: Icon(_showPass
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _showPass = !_showPass;
+                              });
+                            },
+                          ),
+                        ),
                         style: const TextStyle(
                           color: Colors.black,
                         ),
