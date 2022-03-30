@@ -90,7 +90,7 @@ class _WelcomeState extends State<Welcome> {
             ListTile(
               title: const Text('My Reminders'),
               onTap: () {
-                Navigator.pushNamed(context, "/welcome");
+                Navigator.pushNamed(context, "/reminders");
               },
             ),
             ListTile(
@@ -102,7 +102,7 @@ class _WelcomeState extends State<Welcome> {
             ListTile(
               title: const Text('Subscribed Channels'),
               onTap: () {
-                Navigator.pushNamed(context, "/channels");
+                Navigator.pushNamed(context, "/myChannels");
               },
             )
           ],

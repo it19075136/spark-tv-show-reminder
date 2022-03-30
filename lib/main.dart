@@ -5,6 +5,8 @@ import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
 import 'package:spark_tv_shows/pages/signUp/register.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
+import 'package:spark_tv_shows/pages/userScreens/myChannels.dart';
+import 'package:spark_tv_shows/pages/userScreens/myReminders.dart';
 import 'package:spark_tv_shows/pages/userScreens/myShowsList.dart';
 import 'package:spark_tv_shows/pages/welcome/welcome.dart';
 import 'config/firebase_config.dart';
@@ -30,7 +32,9 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const Register(),
         '/welcome': (context) => const Welcome(),
         '/channels': (context) => const Channels(),
-        '/myShows': (context) => const MyShowsList()
+        '/myShows': (context) => const MyShowsList(),
+        '/myChannels': (context) => const MyChannelsList(),
+        '/reminders': (context) => const MyRemindersList()
       },
       title: 'Spark TV Shows',
       debugShowCheckedModeBanner: false,
