@@ -25,6 +25,9 @@ class _EditChannelState extends State<EditChannel> {
   String? url;
   bool imageSet = false;
   bool task = true;
+  bool isEmpty = false;
+  // final Stream<QuerySnapshot> _tvShowsStream =
+  // FirebaseFirestore.instance.collection("shows").snapshots();
   @override
   void initState() {
     // TODO: implement initState
@@ -32,7 +35,7 @@ class _EditChannelState extends State<EditChannel> {
     description = TextEditingController(text: widget.docid.get("description"));
     url = widget.docid.get("image");
     print("doc id");
-    print(widget.docid);
+    print(widget.docid.id);
     // image = File("$url");
   }
 
@@ -222,23 +225,42 @@ class _EditChannelState extends State<EditChannel> {
                                   Container(
                                       child: MaterialButton(
                                           onPressed: () async {
-                                            setState(() {
-                                              task = false;
-                                            });
+                                              final QuerySnapshot result = await FirebaseFirestore.instance
+                                                  .collection('shows')
+                                                  .where('channel', isEqualTo:widget.docid.id)
+                                                  .limit(1)
+                                                  .get();
+                                              final List<DocumentSnapshot> documents = result.docs;
 
-                                            final storageRef =
-                                                await FirebaseStorage.instance
-                                                    .refFromURL(url!);
-                                            await storageRef.delete();
-                                            widget.docid.reference
-                                                .delete()
-                                                .whenComplete(() {
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          const Channels()));
-                                            });
+                                            if(documents.length == 1){
+                                              Fluttertoast.showToast(
+                                                  msg: "You have to delete Allocated TV shows first",
+                                                  backgroundColor: Colors.red,
+                                                  textColor: kPrimaryLightColor,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  webBgColor: "#d8392b",
+                                                  timeInSecForIosWeb: 6,
+                                                  toastLength: Toast.LENGTH_LONG);
+                                            }
+                                              else{
+                                              setState(() {
+                                                task = false;
+                                              });
+                                              // if()
+                                              final storageRef =
+                                                  await FirebaseStorage.instance
+                                                      .refFromURL(url!);
+                                              await storageRef.delete();
+                                              widget.docid.reference
+                                                  .delete()
+                                                  .whenComplete(() {
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            const Channels()));
+                                              });
+                                            }
                                           },
                                           child: Row(
                                             children: [

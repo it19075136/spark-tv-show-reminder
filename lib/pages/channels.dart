@@ -184,24 +184,61 @@ class _ChannelsState extends State<Channels> {
                         else if (type == 'user')
                           (MaterialButton(
                               onPressed: () async {
-                                channelsList
-                                        .contains(snapshot.data!.docs[index].id)
-                                    ? (await FirebaseFirestore.instance
-                                        .collection("user")
-                                        .doc(userId)
-                                        .update({
-                                        "channels": FieldValue.arrayRemove(
-                                            [snapshot.data!.docs[index].id])
-                                      }).then((value) => channelsList.remove(
-                                            snapshot.data!.docs[index].id)))
-                                    : (await FirebaseFirestore.instance
-                                        .collection("user")
-                                        .doc(userId)
-                                        .update({
-                                        "channels": FieldValue.arrayUnion(
-                                            [snapshot.data!.docs[index].id])
-                                      }).then((value) => channelsList.add(
-                                            snapshot.data!.docs[index].id)));
+
+                              if(channelsList.contains(snapshot.data!.docs[index].id)) {
+                                await FirebaseFirestore.instance
+                                    .collection("user")
+                                    .doc(userId)
+                                    .update({
+                                  "channels": FieldValue.arrayRemove(
+                                      [snapshot.data!.docs[index].id])
+                                });
+                                setState(() {
+                                  channelsList.remove(snapshot.data!.docs[index].id);
+                                });
+                                    // .then((value) =>
+                                    // channelsList.remove(
+                                    //     snapshot.data!.docs[index].id));
+                              }
+                              else {
+                                setState(() {
+                                  channelsList
+                                      .add(snapshot.data!.docs[index].id);
+                                });
+                                  await FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(userId)
+                                      .update({
+                                    "channels": FieldValue.arrayUnion(
+                                        [snapshot.data!.docs[index].id])
+                                  });
+                                  //     .then((value) =>
+                                  //
+                                  //     // channelsList
+                                  //     //     .add(snapshot.data!.docs[index].id)
+                                  // );
+                                }
+                                // channelsList
+                                //         .contains(snapshot.data!.docs[index].id)
+                                //     ? (await FirebaseFirestore.instance
+                                //         .collection("user")
+                                //         .doc(userId)
+                                //         .update({
+                                //         "channels": FieldValue.arrayRemove(
+                                //             [snapshot.data!.docs[index].id])
+                                //       }).then((value) =>  channelsList.remove(
+                                //             snapshot.data!.docs[index].id)))
+                                //     : (await FirebaseFirestore.instance
+                                //         .collection("user")
+                                //         .doc(userId)
+                                //         .update({
+                                //         "channels": FieldValue.arrayUnion(
+                                //             [snapshot.data!.docs[index].id])
+                                //       }).then((value) => channelsList.add(
+                                //             snapshot.data!.docs[index].id)));
+                                // setState(() {
+                                //   channelsList.remove(snapshot.data!.docs[index].id);
+                                // });
                                 // print("channelsList");
                                 // print(channelsList);
                               },
