@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ class MyShowsList extends StatefulWidget {
 }
 
 class _MyShowsListState extends State<MyShowsList> {
-
   List tvShows = [];
   List tvShowDataList = [];
 
@@ -31,14 +31,16 @@ class _MyShowsListState extends State<MyShowsList> {
     dynamic result;
     LinkedHashMap<String, dynamic> user =
         await UserServices().getLoggedInUser(userId);
-    tvShows = user["shows"];
+    if(user["shows"] != null) {
+      tvShows = user["shows"];
+    }
     List showData = [];
     for (var element in tvShows) {
       result = await showServices().getShowById(element.toString().trim());
       showData.add(result);
     }
     setState(() {
-      tvShowDataList= showData;
+      tvShowDataList = showData;
     });
   }
 
@@ -46,22 +48,27 @@ class _MyShowsListState extends State<MyShowsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subscribed Tv Shows'),
-        backgroundColor: kPrimaryColor
-      ),
+          title: const Text('Subscribed Tv Shows'),
+          backgroundColor: kPrimaryColor),
       body: ListView.builder(
           itemCount: tvShowDataList.length,
           itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text(tvShowDataList[index]["tvShowName"]),
-                subtitle: Text(tvShowDataList[index]["description"]),
-                leading: const CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://images.unsplash.com/photo-1547721064-da6cfb341d50")),
-                trailing: Text(DateTime.parse(tvShowDataList[index]["showDate"].toDate().toString()).toString()),
-              ),
-            );
+            if (tvShowDataList[index] != null) {
+              return Card(
+                child: ListTile(
+                  title: Text(tvShowDataList[index]["tvShowName"]),
+                  subtitle: Text(tvShowDataList[index]["description"]),
+                  leading: const CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          "https://images.unsplash.com/photo-1547721064-da6cfb341d50")),
+                  trailing: Text(DateTime.parse(
+                          tvShowDataList[index]["showDate"].toDate().toString())
+                      .toString()),
+                ),
+              );
+            } else {
+              return const Card();
+            }
           }),
     );
   }

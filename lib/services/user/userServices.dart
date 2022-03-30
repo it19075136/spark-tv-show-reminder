@@ -9,7 +9,10 @@ class UserServices {
       'name': name,
       'email': email,
       'phone': phone,
-      'type': type
+      'type': type,
+      'channels': [],
+      'shows': [],
+      'reminders': []
     });
   }
 

@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/channels.dart';
 
 class AddChannel extends StatefulWidget {
@@ -27,6 +29,7 @@ class _AddChannelState extends State<AddChannel> {
 
   File? image;
   String? url;
+  bool task =true ;
 
   Future pickImage() async{
    final image= await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -54,7 +57,7 @@ class _AddChannelState extends State<AddChannel> {
         //   child: Text("Save"),),
         // ],
       ),
-      body: Stack(
+      body:task? Stack(
         children: [
           Positioned(
             top: 380,
@@ -152,7 +155,12 @@ class _AddChannelState extends State<AddChannel> {
                           ),
                         ),
                         MaterialButton(onPressed: () async {
-                          if(image != null){
+
+                          if(image != null && name.text !="" && description.text!=""){
+
+                            setState(() {
+                              task = false;
+                            });
                             // print("image not null");
                               final imageref = FirebaseStorage.instance.ref().child("channelsImages").child(name.text+'.jpg');
                             // print("imageref");
@@ -168,6 +176,18 @@ class _AddChannelState extends State<AddChannel> {
                               }).whenComplete(() => {
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const Channels()))
                               });
+
+                          }
+                          else{
+                            Fluttertoast.showToast(
+                              msg:"Enter all details",
+                              backgroundColor: Colors.red,
+                              textColor: kPrimaryLightColor,
+                              gravity: ToastGravity.BOTTOM,
+                              webBgColor: "#d8392b",
+                              timeInSecForIosWeb: 6,
+                              toastLength: Toast.LENGTH_LONG
+                            );
                           }
 
                         },
@@ -179,7 +199,7 @@ class _AddChannelState extends State<AddChannel> {
                           Icon(Icons.save)
                           ],
                           mainAxisSize: MainAxisSize.min,),
-                        color: Colors.blue),
+                        color: Colors.blue,),
                       ],
                     ),
                   ),
@@ -188,7 +208,7 @@ class _AddChannelState extends State<AddChannel> {
             ),
           ),
         ],
-      ),
+      ):Center(child: CircularProgressIndicator()),
 
           );
   }
