@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 
+import '../../constants.dart';
+
 class AddTvShow extends StatefulWidget {
-  const AddTvShow({Key? key}) : super(key: key);
+  String channelId;
+  AddTvShow({Key? key, required this.channelId}) : super(key: key);
 
   @override
-  State<AddTvShow> createState() => _AddTvShowState();
+  State<StatefulWidget> createState() => new _AddTvShowState();
 }
 
 class _AddTvShowState extends State<AddTvShow> {
@@ -19,6 +23,8 @@ class _AddTvShowState extends State<AddTvShow> {
   TimeOfDay _showTime = TimeOfDay.now();
   
   CollectionReference ref = FirebaseFirestore.instance.collection('shows');
+
+  
 
   DateTime setDateTime(DateTime showDate, TimeOfDay showTime) {
     return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour, showTime.minute);
@@ -34,12 +40,16 @@ class _AddTvShowState extends State<AddTvShow> {
               'tvShowName': _tvShowName.text,
               'description': _description.text,
               'showDate': setDateTime(_showDate, _showTime),
-              // 'channel': channel.text,
+              'channel': widget.channelId,
             }).whenComplete(() {
-              // Navigator.pushReplacement(
-              //     context, MaterialPageRoute(builder: (_) => TvShowList(
-              //           channelID
-              //     )));
+              Fluttertoast.showToast(
+                          msg: "Tv Show Successfully Added!",
+                          backgroundColor: Colors.green,
+                          textColor: kPrimaryLightColor,
+                          gravity: ToastGravity.BOTTOM_RIGHT,
+                          webBgColor: "#25eb1e",
+                          timeInSecForIosWeb: 2,
+                          toastLength: Toast.LENGTH_LONG);
             });
           },
           child: const Text(
@@ -108,18 +118,6 @@ class _AddTvShowState extends State<AddTvShow> {
                         child: const Text('Show Date')),
                   ]),
                 ),
-
-                // Container(
-                //   // decoration: BoxDecoration(border: Border.all()),
-                //   child: TextField(
-                //     controller:  _description,
-                //     expands: true,
-                //     maxLines: null,
-                //     decoration: const InputDecoration(
-                //       hintText: 'Description',
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

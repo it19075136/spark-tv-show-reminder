@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import '../user/userServices.dart';
 
 class FirebaseAuthentication {
@@ -38,4 +37,15 @@ Future logout() async {
       return null;
     }
 }
+
+Future resetPassword(String email) async {
+    try {
+      return await _auth.sendPasswordResetEmail(email: email);
+    }
+    catch (err) {
+      print(err.toString());
+      return null;
+    }
+}
+
 }

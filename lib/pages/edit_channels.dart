@@ -47,7 +47,7 @@ class _EditChannelState extends State<EditChannel> {
               right: 0,
               child: Container(
                 height: 300,
-                child: Image.asset("images/channel.jpg"),
+                child: Image.asset("assets/images/channel.jpg"),
               )
           ),
           Positioned(

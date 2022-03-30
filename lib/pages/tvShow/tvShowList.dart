@@ -7,7 +7,8 @@ import 'package:spark_tv_shows/pages/tvShow/editTvShow.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
 
 class TvShowList extends StatefulWidget { 
-  TvShowList({Key? key}) : super(key: key);
+  DocumentSnapshot channelDoc;
+  TvShowList({Key? key, required this.channelDoc}) : super(key: key);
 
   @override
   State<TvShowList> createState() => _TvShowListState();
@@ -16,20 +17,25 @@ class TvShowList extends StatefulWidget {
 class _TvShowListState extends State<TvShowList> {
   final CollectionReference userRef =
       FirebaseFirestore.instance.collection('user');
-  final Stream<QuerySnapshot> _userStream =
-      FirebaseFirestore.instance.collection('shows').where('channelID', isEqualTo: 'channelID').snapshots();
+  
   bool _subscribed = false;
 
   //Get Logged in User
   String userId = "";
+  String type  = "";
   TextEditingController _userType = TextEditingController();
   TextEditingController _userName = TextEditingController();
-
+  
+  Stream<QuerySnapshot> _userStream = new Stream.empty();
+ 
 
   @override
   void initState() {
+    _userStream =
+      FirebaseFirestore.instance.collection('shows').where('channel', isEqualTo: widget.channelDoc.id).snapshots();
     super.initState();
     getUserData();
+
   }
 
   getUserData() async {
@@ -37,18 +43,20 @@ class _TvShowListState extends State<TvShowList> {
     userId = getUser!.uid;
     LinkedHashMap<String, dynamic> user =
         await UserServices().getLoggedInUser(userId);
-    _userType.value = TextEditingValue(text: user["type"]);
+    setState(() {
+      type = user["type"];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _userType.text == 'admin' ? FloatingActionButton(
+      floatingActionButton: type == 'admin' ? FloatingActionButton(
         onPressed: () {
-          // Navigator.pushReplacement(
-          //     context, MaterialPageRoute(builder: (_) => AddTvShow(
-          //       channelID: channelID,
-          //     )));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => AddTvShow(
+                channelId: widget.channelDoc.id
+              )));
         },
         child: const Icon(
           Icons.add,
@@ -76,7 +84,7 @@ class _TvShowListState extends State<TvShowList> {
                     snapshot.data!.docChanges[index].doc['showDate'];
                 return GestureDetector(
                   onTap: () {
-                    if (_userType.text == "admin") {
+                    if (type == "admin") {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
