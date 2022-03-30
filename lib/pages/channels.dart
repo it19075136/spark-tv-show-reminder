@@ -91,8 +91,7 @@ class _ChannelsState extends State<Channels> {
                         context,
                         MaterialPageRoute(
                             builder: (_) => TvShowList(
-                                // docid: snapshot.data!.docs[index],
-                                )));
+                                channelDoc: snapshot.data!.docs[index])));
                   },
                   child: Card(
                     child: Column(
@@ -105,7 +104,6 @@ class _ChannelsState extends State<Channels> {
                             height: 100),
                         // Image(image: NetworkImage(snapshot.data!.docChanges[index].doc["name"]),width: 160,height: 150,fit: BoxFit.cover),
                         // Icon(Icons.subscript),
-
                         SizedBox(
                           height: 10,
                         ),
@@ -184,27 +182,27 @@ class _ChannelsState extends State<Channels> {
                         else if (type == 'user')
                           (MaterialButton(
                               onPressed: () async {
-
-                              if(channelsList.contains(snapshot.data!.docs[index].id)) {
-                                await FirebaseFirestore.instance
-                                    .collection("user")
-                                    .doc(userId)
-                                    .update({
-                                  "channels": FieldValue.arrayRemove(
-                                      [snapshot.data!.docs[index].id])
-                                });
-                                setState(() {
-                                  channelsList.remove(snapshot.data!.docs[index].id);
-                                });
-                                    // .then((value) =>
-                                    // channelsList.remove(
-                                    //     snapshot.data!.docs[index].id));
-                              }
-                              else {
-                                setState(() {
-                                  channelsList
-                                      .add(snapshot.data!.docs[index].id);
-                                });
+                                if (channelsList
+                                    .contains(snapshot.data!.docs[index].id)) {
+                                  await FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(userId)
+                                      .update({
+                                    "channels": FieldValue.arrayRemove(
+                                        [snapshot.data!.docs[index].id])
+                                  });
+                                  setState(() {
+                                    channelsList
+                                        .remove(snapshot.data!.docs[index].id);
+                                  });
+                                  // .then((value) =>
+                                  // channelsList.remove(
+                                  //     snapshot.data!.docs[index].id));
+                                } else {
+                                  setState(() {
+                                    channelsList
+                                        .add(snapshot.data!.docs[index].id);
+                                  });
                                   await FirebaseFirestore.instance
                                       .collection("user")
                                       .doc(userId)

@@ -9,7 +9,6 @@ import 'package:spark_tv_shows/pages/userScreens/myChannels.dart';
 import 'package:spark_tv_shows/pages/userScreens/myReminders.dart';
 import 'package:spark_tv_shows/pages/userScreens/myShowsList.dart';
 import 'package:spark_tv_shows/pages/welcome/welcome.dart';
-
 import 'config/firebase_config.dart';
 
 Future<void> main() async {
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/welcome': (context) => const Welcome(),
-        '/tvShows': (context) =>  TvShowList(),
         '/channels': (context) => const Channels(),
         '/myShows': (context) => const MyShowsList(),
         '/myChannels': (context) => const MyChannelsList(),

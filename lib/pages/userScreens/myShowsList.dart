@@ -53,7 +53,7 @@ class _MyShowsListState extends State<MyShowsList> {
       body: ListView.builder(
           itemCount: tvShowDataList.length,
           itemBuilder: (context, index) {
-            if (tvShowDataList[index] != null || tvShowDataList.isNotEmpty) {
+            if (tvShowDataList[index] != null) {
               return Card(
                 child: ListTile(
                   title: Text(tvShowDataList[index]["tvShowName"]),
@@ -67,12 +67,7 @@ class _MyShowsListState extends State<MyShowsList> {
                 ),
               );
             } else {
-              return const Text("No Subscribed Tv Shows",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-              );
+              return const Card();
             }
           }),
     );
