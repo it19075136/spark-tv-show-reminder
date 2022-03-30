@@ -88,7 +88,7 @@ class _ChannelsState extends State<Channels> {
                     context,
                     MaterialPageRoute(
                         builder: (_) => TvShowList(
-                          // docid: snapshot.data!.docs[index],
+                          channelDoc: snapshot.data!.docs[index]
                         )));
               } ,
 
