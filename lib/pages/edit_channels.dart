@@ -57,8 +57,7 @@ class _EditChannelState extends State<EditChannel> {
           child: Text("Edit Channel"),
         ),
       ),
-      body: task
-          ? Stack(
+      body: task ? Stack(
               children: [
                 Positioned(
                     top: 380,
@@ -243,23 +242,36 @@ class _EditChannelState extends State<EditChannel> {
                                                   toastLength: Toast.LENGTH_LONG);
                                             }
                                               else{
-                                              setState(() {
-                                                task = false;
-                                              });
-                                              // if()
-                                              final storageRef =
-                                                  await FirebaseStorage.instance
-                                                      .refFromURL(url!);
-                                              await storageRef.delete();
-                                              widget.docid.reference
-                                                  .delete()
-                                                  .whenComplete(() {
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            const Channels()));
-                                              });
+                                                showDialog(context: context, builder: (context)=> new AlertDialog(
+                                                  title: Text("Are you sure?"),
+                                                  content: Text("Do you want to delete the Channel?"),
+                                                  actions:[
+                                                    TextButton(onPressed: ()async {
+                                                      setState(() {
+                                                        task = false;
+                                                      });
+                                                      // if()
+                                                      final storageRef =
+                                                          await FirebaseStorage.instance
+                                                          .refFromURL(url!);
+                                                      await storageRef.delete();
+                                                      widget.docid.reference
+                                                          .delete()
+                                                          .whenComplete(() {
+                                                            Navigator.of(context).pop();
+                                                        Navigator.pushReplacement(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (_) =>
+                                                                const Channels()));
+                                                      });
+                                                    }, child: Text('Yes')),
+                                                    TextButton(onPressed: (){
+                                                            Navigator.of(context).pop(false);
+                                                    }, child: Text('No'))
+                                                  ],
+                                                ));
+
                                             }
                                           },
                                           child: Row(

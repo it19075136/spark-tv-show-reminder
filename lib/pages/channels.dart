@@ -159,7 +159,8 @@ class _ChannelsState extends State<Channels> {
                               onPressed: () {
                                 // print("my,id");
                                 // print(snapshot.data!.docs[index].id);
-                                Navigator.push(
+                                // Navigator.pushNamed(context, Shop.routeName);
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (_) => EditChannel(
