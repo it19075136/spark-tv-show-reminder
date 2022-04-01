@@ -1,4 +1,3 @@
-// import 'dart:html';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spark_tv_shows/constants.dart';
-import 'package:spark_tv_shows/pages/channels.dart';
+import 'package:spark_tv_shows/pages/channels/channels.dart';
 
 class AddChannel extends StatefulWidget {
   AddChannel({Key? key}) : super(key: key);
@@ -21,7 +20,6 @@ class _AddChannelState extends State<AddChannel> {
 
   TextEditingController description = TextEditingController();
 
-  // const
   CollectionReference ref = FirebaseFirestore.instance.collection("channels");
 
   final _formKey = GlobalKey<FormState>();
@@ -44,17 +42,6 @@ class _AddChannelState extends State<AddChannel> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Add Channels")),
-        // actions: [
-        //   MaterialButton(onPressed: (){
-        //     ref.add({
-        //       "name":name,
-        //       "description":description
-        //     }).whenComplete(() => {
-        //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels()))
-        //     });
-        //   },
-        //   child: Text("Save"),),
-        // ],
       ),
       body: task
           ? Stack(
@@ -97,18 +84,6 @@ class _AddChannelState extends State<AddChannel> {
                                   child: image == null
                                       ? CircleAvatar(
                                           radius: 71,
-                                          // backgroundImage:
-                                          // backgroundColor: ,
-                                          // CircleAvatar(
-                                          //   radius: 63,
-                                          //   child:MaterialButton(
-                                          //     onPressed:(){
-                                          //
-                                          //     } ,
-                                          //     child: Icon(Icons.add_a_photo,),
-                                          //
-                                          //   ) ,
-                                          // ),
                                         )
                                       : ClipOval(
                                           child: Image.file(
@@ -120,16 +95,6 @@ class _AddChannelState extends State<AddChannel> {
                                         ),
                                 ),
                               ),
-                              // Positioned(
-                              //   top:90,
-                              //     left: 150,
-                              //     child: MaterialButton(
-                              //       onPressed:(){
-                              //
-                              //       } ,
-                              //      child: Icon(Icons.add_a_photo),
-                              //     )
-                              // ),
                               Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: TextField(
@@ -164,17 +129,12 @@ class _AddChannelState extends State<AddChannel> {
                                     setState(() {
                                       task = false;
                                     });
-                                    // print("image not null");
                                     final imageref = FirebaseStorage.instance
                                         .ref()
                                         .child("channelsImages")
                                         .child(name.text + '.jpg');
-                                    // print("imageref");
                                     await imageref.putFile(image!);
-                                    // print("putimagefile");
                                     url = await imageref.getDownloadURL();
-                                    // print("url");
-                                    // print(url);
                                     ref.add({
                                       "name": name.text,
                                       "description": description.text,
