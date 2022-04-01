@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:spark_tv_shows/pages/add_channel.dart';
-import 'package:spark_tv_shows/pages/edit_channels.dart';
+import 'package:spark_tv_shows/pages/channels/add_channel.dart';
+import 'package:spark_tv_shows/pages/channels/edit_channels.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 
@@ -19,8 +19,6 @@ class _ChannelsState extends State<Channels> {
   String userId = "";
   String type = "";
   List channelsList = [];
-  // String url ="";
-  // TextEditingController _typeController = TextEditingController();
   final Stream<QuerySnapshot> _chaneelStream =
       FirebaseFirestore.instance.collection("channels").snapshots();
 
@@ -35,19 +33,12 @@ class _ChannelsState extends State<Channels> {
     userId = getUser!.uid;
     LinkedHashMap<String, dynamic> user =
         await UserServices().getLoggedInUser(userId);
-    // print("user type");
-    // print(user['image']);
-    // _typeController.value = TextEditingValue(text: user["type"]);
     setState(() {
       type = user["type"];
     });
     setState(() {
       channelsList = user["channels"];
     });
-    // setState(() {
-    //   print("image url $url");
-    // });
-    // _phoneController.value = TextEditingValue(text: user["phone"]);
     ;
   }
 
@@ -102,37 +93,9 @@ class _ChannelsState extends State<Channels> {
                             snapshot.data!.docChanges[index].doc["image"],
                             width: 100,
                             height: 100),
-                        // Image(image: NetworkImage(snapshot.data!.docChanges[index].doc["name"]),width: 160,height: 150,fit: BoxFit.cover),
-                        // Icon(Icons.subscript),
                         SizedBox(
                           height: 10,
                         ),
-                        // Padding(padding: EdgeInsets.only(left: 3,right: 3),
-                        // child:
-                        // ListTile(
-                        //   // shape: RoundedRectangleBorder(
-                        //   //   borderRadius: BorderRadius.circular(10),
-                        //   //   side: BorderSide(color: Colors.black)
-                        //   // ),
-                        //
-                        //   title: Text(
-                        //     snapshot.data!.docChanges[index].doc["name"],
-                        //     style: TextStyle(
-                        //         fontSize: 20
-                        //     ),
-                        //   ),
-                        //   subtitle: Text(
-                        //     snapshot.data!.docChanges[index].doc["description"],
-                        //     style: TextStyle(
-                        //         fontSize: 20
-                        //     ),
-                        //   ),
-                        //   contentPadding: EdgeInsets.symmetric(
-                        //     vertical: 12,
-                        //     horizontal: 16
-                        //   ),
-                        // )
-                        //   ),
                         Text(
                           snapshot.data!.docChanges[index].doc["name"],
                           // style: TextStyle(
@@ -145,21 +108,9 @@ class _ChannelsState extends State<Channels> {
                           //     fontSize: 20
                           // ),
                         ),
-                        // Text(
-                        //   snapshot.data!.docChanges[index].doc["description"],
-                        //   style: TextStyle(
-                        //       fontSize: 20
-                        //   ),
-                        // ),
-                        // if(){
-                        //
-                        // }
                         if (type == 'admin')
                           (MaterialButton(
                               onPressed: () {
-                                // print("my,id");
-                                // print(snapshot.data!.docs[index].id);
-                                // Navigator.pushNamed(context, Shop.routeName);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -177,9 +128,7 @@ class _ChannelsState extends State<Channels> {
                                 ],
                                 mainAxisSize: MainAxisSize.min,
                               ),
-                              color: Colors.blue
-                              // Image.asset("name")
-                              ))
+                              color: Colors.blue))
                         else if (type == 'user')
                           (MaterialButton(
                               onPressed: () async {
@@ -196,9 +145,6 @@ class _ChannelsState extends State<Channels> {
                                     channelsList
                                         .remove(snapshot.data!.docs[index].id);
                                   });
-                                  // .then((value) =>
-                                  // channelsList.remove(
-                                  //     snapshot.data!.docs[index].id));
                                 } else {
                                   setState(() {
                                     channelsList
@@ -211,35 +157,7 @@ class _ChannelsState extends State<Channels> {
                                     "channels": FieldValue.arrayUnion(
                                         [snapshot.data!.docs[index].id])
                                   });
-                                  //     .then((value) =>
-                                  //
-                                  //     // channelsList
-                                  //     //     .add(snapshot.data!.docs[index].id)
-                                  // );
                                 }
-                                // channelsList
-                                //         .contains(snapshot.data!.docs[index].id)
-                                //     ? (await FirebaseFirestore.instance
-                                //         .collection("user")
-                                //         .doc(userId)
-                                //         .update({
-                                //         "channels": FieldValue.arrayRemove(
-                                //             [snapshot.data!.docs[index].id])
-                                //       }).then((value) =>  channelsList.remove(
-                                //             snapshot.data!.docs[index].id)))
-                                //     : (await FirebaseFirestore.instance
-                                //         .collection("user")
-                                //         .doc(userId)
-                                //         .update({
-                                //         "channels": FieldValue.arrayUnion(
-                                //             [snapshot.data!.docs[index].id])
-                                //       }).then((value) => channelsList.add(
-                                //             snapshot.data!.docs[index].id)));
-                                // setState(() {
-                                //   channelsList.remove(snapshot.data!.docs[index].id);
-                                // });
-                                // print("channelsList");
-                                // print(channelsList);
                               },
                               child: Text("Subscribe"),
                               color: channelsList

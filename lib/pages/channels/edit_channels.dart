@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spark_tv_shows/constants.dart';
-import 'package:spark_tv_shows/pages/channels.dart';
+import 'package:spark_tv_shows/pages/channels/channels.dart';
 
 class EditChannel extends StatefulWidget {
   DocumentSnapshot docid;
@@ -26,8 +26,6 @@ class _EditChannelState extends State<EditChannel> {
   bool imageSet = false;
   bool task = true;
   bool isEmpty = false;
-  // final Stream<QuerySnapshot> _tvShowsStream =
-  // FirebaseFirestore.instance.collection("shows").snapshots();
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +34,6 @@ class _EditChannelState extends State<EditChannel> {
     url = widget.docid.get("image");
     print("doc id");
     print(widget.docid.id);
-    // image = File("$url");
   }
 
   Future pickImage() async {
@@ -57,7 +54,8 @@ class _EditChannelState extends State<EditChannel> {
           child: Text("Edit Channel"),
         ),
       ),
-      body: task ? Stack(
+      body: task
+          ? Stack(
               children: [
                 Positioned(
                     top: 380,
@@ -97,18 +95,6 @@ class _EditChannelState extends State<EditChannel> {
                                   child: image == null && url == null
                                       ? CircleAvatar(
                                           radius: 71,
-                                          // backgroundImage:
-                                          // backgroundColor: ,
-                                          // CircleAvatar(
-                                          //   radius: 63,
-                                          //   child:MaterialButton(
-                                          //     onPressed:(){
-                                          //
-                                          //     } ,
-                                          //     child: Icon(Icons.add_a_photo,),
-                                          //
-                                          //   ) ,
-                                          // ),
                                         )
                                       : ClipOval(
                                           child: image == null
@@ -166,16 +152,10 @@ class _EditChannelState extends State<EditChannel> {
                                           });
                                           CircularProgressIndicator();
                                           if (imageSet == true) {
-                                            // if(url != null){
-                                            // print("delete image 1");
                                             final storageRef =
                                                 await FirebaseStorage.instance
                                                     .refFromURL(url!);
-                                            // print("delete image 2");
                                             await storageRef.delete();
-                                            // print("delete image");
-                                            // }
-
                                             final imageref = FirebaseStorage
                                                 .instance
                                                 .ref()
@@ -224,54 +204,77 @@ class _EditChannelState extends State<EditChannel> {
                                   Container(
                                       child: MaterialButton(
                                           onPressed: () async {
-                                              final QuerySnapshot result = await FirebaseFirestore.instance
-                                                  .collection('shows')
-                                                  .where('channel', isEqualTo:widget.docid.id)
-                                                  .limit(1)
-                                                  .get();
-                                              final List<DocumentSnapshot> documents = result.docs;
+                                            final QuerySnapshot result =
+                                                await FirebaseFirestore.instance
+                                                    .collection('shows')
+                                                    .where('channel',
+                                                        isEqualTo:
+                                                            widget.docid.id)
+                                                    .limit(1)
+                                                    .get();
+                                            final List<DocumentSnapshot>
+                                                documents = result.docs;
 
-                                            if(documents.length == 1){
+                                            if (documents.length == 1) {
                                               Fluttertoast.showToast(
-                                                  msg: "You have to delete Allocated TV shows first",
+                                                  msg:
+                                                      "You have to delete Allocated TV shows first",
                                                   backgroundColor: Colors.red,
                                                   textColor: kPrimaryLightColor,
                                                   gravity: ToastGravity.BOTTOM,
                                                   webBgColor: "#d8392b",
                                                   timeInSecForIosWeb: 6,
-                                                  toastLength: Toast.LENGTH_LONG);
-                                            }
-                                              else{
-                                                showDialog(context: context, builder: (context)=> new AlertDialog(
-                                                  title: Text("Are you sure?"),
-                                                  content: Text("Do you want to delete the Channel?"),
-                                                  actions:[
-                                                    TextButton(onPressed: ()async {
-                                                      setState(() {
-                                                        task = false;
-                                                      });
-                                                      // if()
-                                                      final storageRef =
-                                                          await FirebaseStorage.instance
-                                                          .refFromURL(url!);
-                                                      await storageRef.delete();
-                                                      widget.docid.reference
-                                                          .delete()
-                                                          .whenComplete(() {
-                                                            Navigator.of(context).pop();
-                                                        Navigator.pushReplacement(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (_) =>
-                                                                const Channels()));
-                                                      });
-                                                    }, child: Text('Yes')),
-                                                    TextButton(onPressed: (){
-                                                            Navigator.of(context).pop(false);
-                                                    }, child: Text('No'))
-                                                  ],
-                                                ));
-
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG);
+                                            } else {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      new AlertDialog(
+                                                        title: Text(
+                                                            "Are you sure?"),
+                                                        content: Text(
+                                                            "Do you want to delete the Channel?"),
+                                                        actions: [
+                                                          TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                setState(() {
+                                                                  task = false;
+                                                                });
+                                                                final storageRef =
+                                                                    await FirebaseStorage
+                                                                        .instance
+                                                                        .refFromURL(
+                                                                            url!);
+                                                                await storageRef
+                                                                    .delete();
+                                                                widget.docid
+                                                                    .reference
+                                                                    .delete()
+                                                                    .whenComplete(
+                                                                        () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  Navigator.pushReplacement(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (_) =>
+                                                                              const Channels()));
+                                                                });
+                                                              },
+                                                              child:
+                                                                  Text('Yes')),
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(false);
+                                                              },
+                                                              child: Text('No'))
+                                                        ],
+                                                      ));
                                             }
                                           },
                                           child: Row(
@@ -284,33 +287,9 @@ class _EditChannelState extends State<EditChannel> {
                                             ],
                                             mainAxisSize: MainAxisSize.min,
                                           ),
-                                          color: Colors.red)
-                                      // decoration: BoxDecoration(color: Colors.blue),
-                                      // child: IconButton(
-                                      //   onPressed: (){
-                                      //     widget.docid.reference.delete().whenComplete(() {
-                                      //       Navigator.pushReplacement(
-                                      //           context, MaterialPageRoute(builder: (_) => const Channels()));
-                                      //     });
-                                      //   },
-                                      //   icon: Icon(Icons.delete),
-                                      //   color: Colors.red,
-                                      //
-                                      // ),
-                                      )
+                                          color: Colors.red))
                                 ],
                               )
-
-                              // MaterialButton(onPressed: (){
-                              //   widget.docid.reference.update({
-                              //     "name":name.text,
-                              //     "description":description.text
-                              //   }).whenComplete(() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Channels())));
-                              // },
-                              //
-                              //     child: Text("Delete"),
-                              //     color: Colors.red
-                              // ),
                             ],
                           ),
                         ),
