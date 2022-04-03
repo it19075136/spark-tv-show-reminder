@@ -6,7 +6,6 @@ import 'package:spark_tv_shows/pages/tvShow/addTvShow.dart';
 import 'package:spark_tv_shows/pages/tvShow/editTvShow.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
 import '../../reminders/add_reminder.dart';
-// import '../editTvShow2.dart';
 
 class TvShowList extends StatefulWidget { 
   DocumentSnapshot channelDoc;
@@ -32,9 +31,10 @@ class _TvShowListState extends State<TvShowList> {
  
 
   @override
-  void initState(){
-
-   super.initState();
+  void initState() {
+    _userStream =
+      FirebaseFirestore.instance.collection('shows').where('channel', isEqualTo: widget.channelDoc.id).snapshots();
+    super.initState();
     getUserData();
 
   }
