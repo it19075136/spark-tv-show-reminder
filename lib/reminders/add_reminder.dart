@@ -3,10 +3,42 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:spark_tv_shows/main.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 import 'package:spark_tv_shows/services/reminders/reminderService.dart';
 import '../services/channels/channelServices.dart';
 import '../services/user/userServices.dart';
+
+void scheduleReminder() async {
+
+  print("scheduleReminder func works");
+  var sceduledNotificationDateTime = 
+  DateTime.now().add(Duration(seconds: 10));
+
+var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  'alarm_notif',
+  'alarm_notif',
+  'Channel for Alarm notify',
+  icon: 'codex_logo',
+  sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+  largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
+   );
+
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+    sound: 'a_long_cold_sting.wav',
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true
+  );
+
+  var platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics
+  );
+
+  await flutterLocalNotificationsPlugin.schedule(
+    0, "Office", "Good Morning", sceduledNotificationDateTime, platformChannelSpecifics);
+}
 
 class AddReminder extends StatefulWidget {
 
@@ -175,10 +207,12 @@ setState(() {
                   isReminderExist ? 
              
                     // print("remove from array method");
-                     await FirebaseFirestore.instance.collection("user").doc(userId).update({"reminders":FieldValue.arrayRemove([existReminderId])}).then((value) => reminderList.remove(existReminderId))
-                     .then((value) => {
-                       Navigator.pop(context)
-                     })
+                    //  await FirebaseFirestore.instance.collection("user").doc(userId).update({"reminders":FieldValue.arrayRemove([existReminderId])}).then((value) => reminderList.remove(existReminderId))
+                    //  .then((value) => {
+                    //    Navigator.pop(context)
+                    //  })
+
+                    scheduleReminder()
                   
                   :                
                   reminders.add({
