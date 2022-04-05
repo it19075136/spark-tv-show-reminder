@@ -159,7 +159,8 @@ class _ChannelsState extends State<Channels> {
                                   });
                                 }
                               },
-                              child: Text("Subscribe"),
+                              child: channelsList
+                                  .contains(snapshot.data!.docs[index].id)?Text("Unsubscribe"):Text("Subscribe"),
                               color: channelsList
                                       .contains(snapshot.data!.docs[index].id)
                                   ? Colors.grey
