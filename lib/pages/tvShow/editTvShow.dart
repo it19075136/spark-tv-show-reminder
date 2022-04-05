@@ -18,11 +18,13 @@ class _EditTvShoState extends State<EditTvShow> {
   TextEditingController _tvShowName = TextEditingController();
   TextEditingController _description = TextEditingController();
   TextEditingController _channelID = TextEditingController();
+  //Set Date and Time to now Date and Time
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
 
   @override
   void initState() {
+    //set all fields values according to the channel ID
     _tvShowName = TextEditingController(text: widget.docid.get('tvShowName'));
     _description = TextEditingController(text: widget.docid.get('description'));
     _channelID = TextEditingController(text: widget.docid.get('channel'));
@@ -33,6 +35,7 @@ class _EditTvShoState extends State<EditTvShow> {
     super.initState();
   }
 
+  //Convert date and time into DateTime Format
   DateTime setDateTime(DateTime showDate, TimeOfDay showTime) {
     return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour,
         showTime.minute);
@@ -71,72 +74,74 @@ class _EditTvShoState extends State<EditTvShow> {
         ],
         title: const Text("Edit Tv Show"),
       ),
-      body: Container(
-        child: Center(
-          child: Form(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _tvShowName,
-                        decoration: const InputDecoration(
-                            hintText: 'TV Show Name',
-                            label: Text('Tv Show Name')),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Center(
+            child: Form(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(children: [
+                      const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _description,
-                        decoration: const InputDecoration(
-                            hintText: 'Description',
-                            label: Text('Description')),
+                      Container(
+                        child: TextField(
+                          controller: _tvShowName,
+                          decoration: const InputDecoration(
+                              hintText: 'TV Show Name',
+                              label: Text('Tv Show Name')),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    //Show Date
-                    const Text('Pick Show Date',
-                        style: TextStyle(fontSize: 20)),
-                    Text(
-                      '$_showDate'.split(' ')[0],
-                      style: const TextStyle(fontSize: 25),
-                    ),
-                    // const Divider(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.lock_clock),
-                      label: Text('Show Date'),
-                      onPressed: () => _openDatePicker(context),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Divider(),
-                    //Show Time
-                    const Text('Pick Show Time',
-                        style: TextStyle(fontSize: 20)),
-                    Text(
-                      '${_showTime.hour}:${_showTime.minute}',
-                      style: const TextStyle(fontSize: 25),
-                    ),
-                    ElevatedButton(
-                        onPressed: () => _setTimeForShow(context),
-                        child: const Text('Show Date')),
-                  ]),
-                ),
-              ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: TextField(
+                          controller: _description,
+                          decoration: const InputDecoration(
+                              hintText: 'Description',
+                              label: Text('Description')),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      //Show Date
+                      const Text('Pick Show Date',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '$_showDate'.split(' ')[0],
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      // const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.lock_clock),
+                        label: const Text('Show Date'),
+                        onPressed: () => _openDatePicker(context),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divider(),
+                      //Show Time
+                      const Text('Pick Show Time',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '${_showTime.hour}:${_showTime.minute}',
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      ElevatedButton(
+                          onPressed: () => _setTimeForShow(context),
+                          child: const Text('Show Date')),
+                    ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -144,7 +149,7 @@ class _EditTvShoState extends State<EditTvShow> {
     );
   }
 
-//Date Picker
+  //Date Picker
   _openDatePicker(BuildContext context) async {
     final DateTime? date = await showDatePicker(
         context: context,
@@ -162,7 +167,7 @@ class _EditTvShoState extends State<EditTvShow> {
     }
   }
 
-//Time Picker
+  //Time Picker
   _setTimeForShow(BuildContext context) async {
     final TimeOfDay? time =
         await showTimePicker(context: context, initialTime: _showTime);

@@ -26,11 +26,13 @@ class _AddTvShowState extends State<AddTvShow> {
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
 
+  //Refernce to the 'shows' collection
   CollectionReference ref = FirebaseFirestore.instance.collection('shows');
 
   File? image;
   String? url;
 
+  //Handle Image
   Future pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -40,6 +42,7 @@ class _AddTvShowState extends State<AddTvShow> {
     });
   }
 
+  //Convert date and time into DateTime Format
   DateTime setDateTime(DateTime showDate, TimeOfDay showTime) {
     return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour,
         showTime.minute);
@@ -109,11 +112,11 @@ class _AddTvShowState extends State<AddTvShow> {
                     child: Column(children: [
                       Container(
                         margin:
-                            EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                            const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                         child: InkWell(
                           onTap: () => pickImage(),
                           child: image == null
-                              ? CircleAvatar(
+                              ? const CircleAvatar(
                                   radius: 71,
                                 )
                               : ClipOval(
@@ -161,14 +164,14 @@ class _AddTvShowState extends State<AddTvShow> {
                         height: 10,
                       ),
                       ElevatedButton.icon(
-                        icon: Icon(Icons.lock_clock),
-                        label: Text('Show Date'),
+                        icon: const Icon(Icons.lock_clock),
+                        label: const Text('Show Date'),
                         onPressed: () => _openDatePicker(context),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Divider(),
+                      const Divider(),
                       const Text('Pick Show Time',
                           style: TextStyle(fontSize: 20)),
                       Text(

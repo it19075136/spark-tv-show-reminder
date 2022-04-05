@@ -19,7 +19,6 @@ class _TvShowListState extends State<TvShowList> {
       FirebaseFirestore.instance.collection('user');
 
   List showList = [];
-  //Get Logged in User
   String userId = "";
   String type = "";
   TextEditingController _userType = TextEditingController();
@@ -37,6 +36,7 @@ class _TvShowListState extends State<TvShowList> {
     getUserData();
   }
 
+  //Get Logged in User Data
   getUserData() async {
     User? getUser = FirebaseAuth.instance.currentUser;
     userId = getUser!.uid;
