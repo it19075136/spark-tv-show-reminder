@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 
 import '../../constants.dart';
@@ -21,104 +25,158 @@ class _AddTvShowState extends State<AddTvShow> {
   TextEditingController _description = TextEditingController();
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
-  
+
   CollectionReference ref = FirebaseFirestore.instance.collection('shows');
 
-  
+  File? image;
+  String? url;
+
+  Future pickImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    final imageTemporary = File(image.path);
+    setState(() {
+      this.image = imageTemporary;
+    });
+  }
 
   DateTime setDateTime(DateTime showDate, TimeOfDay showTime) {
-    return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour, showTime.minute);
+    return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour,
+        showTime.minute);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add tv show'), actions: [
+      appBar: AppBar(title: const Text('Add Tv Show'), actions: [
         MaterialButton(
-          onPressed: () {
-            
-            ref.add({
-              'tvShowName': _tvShowName.text,
-              'description': _description.text,
-              'showDate': setDateTime(_showDate, _showTime),
-              'channel': widget.channelId,
-            }).whenComplete(() {
+          onPressed: () async{
+            if (image != null &&
+                _tvShowName.text != "" &&
+                _description.text != "" &&
+                widget.channelId != "") {
+              final imageRef = FirebaseStorage.instance.ref().child("tvshowImages").child(_tvShowName.text+'.jpg');
+
+              await imageRef.putFile(image!);
+              url = await imageRef.getDownloadURL();
+              ref.add({
+                'tvShowName': _tvShowName.text,
+                'description': _description.text,
+                'showDate': setDateTime(_showDate, _showTime),
+                'channel': widget.channelId,
+                'image': url
+              }).whenComplete(() {
+                Fluttertoast.showToast(
+                    msg: "Tv Show Successfully Added!",
+                    backgroundColor: Colors.green,
+                    textColor: kPrimaryLightColor,
+                    gravity: ToastGravity.BOTTOM_RIGHT,
+                    webBgColor: "#25eb1e",
+                    timeInSecForIosWeb: 2,
+                    toastLength: Toast.LENGTH_LONG);
+              });
+            } else {
               Fluttertoast.showToast(
-                          msg: "Tv Show Successfully Added!",
-                          backgroundColor: Colors.green,
-                          textColor: kPrimaryLightColor,
-                          gravity: ToastGravity.BOTTOM_RIGHT,
-                          webBgColor: "#25eb1e",
-                          timeInSecForIosWeb: 2,
-                          toastLength: Toast.LENGTH_LONG);
-            });
+                  msg: "Tv Show Unsuccessful!",
+                  backgroundColor: Colors.red,
+                  textColor: kPrimaryLightColor,
+                  gravity: ToastGravity.BOTTOM_RIGHT,
+                  webBgColor: "#d8392b",
+                  timeInSecForIosWeb: 2,
+                  toastLength: Toast.LENGTH_LONG);
+            }
           },
           child: const Text(
             "save",
           ),
         )
-      ]),
-      body: Container(
-        child: Center(
-          child: Form(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _tvShowName,
-                        decoration: const InputDecoration(
-                            hintText: 'TV Show Name',
-                            label: Text('Tv Show Name')),
+      ],),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Center(
+            child: Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(children: [
+                      Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                        child: InkWell(
+                          onTap: () => pickImage(),
+                          child: image == null
+                              ? CircleAvatar(
+                                  radius: 71,
+                                )
+                              : ClipOval(
+                                  child: Image.file(
+                                    image!,
+                                    width: 160,
+                                    height: 150,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _description,
-                        decoration: const InputDecoration(
-                            hintText: 'Description',
-                            label: Text('Description')),
+                      const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Text('Pick Show Date', style: TextStyle(fontSize: 20)),
-                    Text(
-                      '$_showDate'.split(' ')[0],
-                      style: const TextStyle(fontSize: 25),
-                    ),
-                    // const Divider(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.lock_clock),
-                      label: Text('Show Date'),
+                      Container(
+                        child: TextField(
+                          controller: _tvShowName,
+                          decoration: const InputDecoration(
+                              hintText: 'TV Show Name',
+                              label: Text('Tv Show Name')),
+                        )
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: TextField(
+                          controller: _description,
+                          decoration: const InputDecoration(
+                              hintText: 'Description',
+                              label: Text('Description')),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text('Pick Show Date',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '$_showDate'.split(' ')[0],
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      // const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.lock_clock),
+                        label: Text('Show Date'),
                         onPressed: () => _openDatePicker(context),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Divider(),
-                    const Text('Pick Show Time', style: TextStyle(fontSize: 20)),
-                    Text(
-                      '${_showTime.hour}:${_showTime.minute}',
-                      style: const TextStyle(fontSize: 25),
-                    ),
-                    ElevatedButton(
-                        onPressed: () => _setTimeForShow(context),
-                        child: const Text('Show Date')),
-                  ]),
-                ),
-              ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Divider(),
+                      const Text('Pick Show Time',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '${_showTime.hour}:${_showTime.minute}',
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      ElevatedButton(
+                          onPressed: () => _setTimeForShow(context),
+                          child: const Text('Show Date')),
+                    ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -126,7 +184,8 @@ class _AddTvShowState extends State<AddTvShow> {
     );
   }
 
- _openDatePicker(BuildContext context) async {
+//Date Picker
+  _openDatePicker(BuildContext context) async {
     final DateTime? date = await showDatePicker(
         context: context,
         initialDate: _showDate,
@@ -142,7 +201,7 @@ class _AddTvShowState extends State<AddTvShow> {
       });
     }
   }
-
+//Time Picker
   _setTimeForShow(BuildContext context) async {
     final TimeOfDay? time =
         await showTimePicker(context: context, initialTime: _showTime);
