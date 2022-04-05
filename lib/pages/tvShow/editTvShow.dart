@@ -18,19 +18,24 @@ class _EditTvShoState extends State<EditTvShow> {
   TextEditingController _tvShowName = TextEditingController();
   TextEditingController _description = TextEditingController();
   TextEditingController _channelID = TextEditingController();
+  //Set Date and Time to now Date and Time
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
 
   @override
   void initState() {
+    //set all fields values according to the channel ID
     _tvShowName = TextEditingController(text: widget.docid.get('tvShowName'));
     _description = TextEditingController(text: widget.docid.get('description'));
     _channelID = TextEditingController(text: widget.docid.get('channel'));
     Timestamp showTimestamp = widget.docid.get('showDate');
-    _showDate =  DateTime.parse(showTimestamp.toDate().toString());
+    _showDate = DateTime.parse(showTimestamp.toDate().toString());
+    _showTime = TimeOfDay.fromDateTime(
+        DateTime.parse(showTimestamp.toDate().toString()));
     super.initState();
   }
 
+  //Convert date and time into DateTime Format
   DateTime setDateTime(DateTime showDate, TimeOfDay showTime) {
     return DateTime(showDate.year, showDate.month, showDate.day, showTime.hour,
         showTime.minute);
@@ -39,102 +44,104 @@ class _EditTvShoState extends State<EditTvShow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        MaterialButton(
-          onPressed: () {
-            widget.docid.reference.update({
-              'tvShowName': _tvShowName.text,
-              'description': _description.text,
-              // 'showDate': setDateTime(_showDate, _showTime),
-              // 'time': time.text,
-              // 'date': date.text,
-              // 'channel': channel.text,
-            }).whenComplete(() {
-              Fluttertoast.showToast(
-                  msg: "Successfully Updated!",
-                  backgroundColor: Colors.green,
-                  textColor: kPrimaryLightColor,
-                  gravity: ToastGravity.BOTTOM_RIGHT,
-                  webBgColor: "#25eb1e",
-                  timeInSecForIosWeb: 2,
-                  toastLength: Toast.LENGTH_LONG);
-            });
-          },
-          child: const Text("Save"),
-        ),
-        MaterialButton(
-          onPressed: () {
-            _confirmDelete();
-          },
-          child: const Text("delete"),
-        )
-      ]),
-      body: Container(
-        child: Center(
-          child: Form(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _tvShowName,
-                        decoration: const InputDecoration(
-                            hintText: 'TV Show Name',
-                            label: Text('Tv Show Name')),
+      appBar: AppBar(
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              widget.docid.reference.update({
+                'tvShowName': _tvShowName.text,
+                'description': _description.text,
+                'showDate': setDateTime(_showDate, _showTime),
+              }).whenComplete(() {
+                Fluttertoast.showToast(
+                    msg: "Successfully Updated!",
+                    backgroundColor: Colors.green,
+                    textColor: kPrimaryLightColor,
+                    gravity: ToastGravity.BOTTOM_RIGHT,
+                    webBgColor: "#25eb1e",
+                    timeInSecForIosWeb: 2,
+                    toastLength: Toast.LENGTH_LONG);
+              });
+            },
+            child: const Text("Save"),
+          ),
+          MaterialButton(
+            onPressed: () {
+              _confirmDelete();
+            },
+            child: const Text("delete"),
+          )
+        ],
+        title: const Text("Edit Tv Show"),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Center(
+            child: Form(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(children: [
+                      const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: TextField(
-                        controller: _description,
-                        decoration: const InputDecoration(
-                            hintText: 'Description',
-                            label: Text('Description')),
+                      Container(
+                        child: TextField(
+                          controller: _tvShowName,
+                          decoration: const InputDecoration(
+                              hintText: 'TV Show Name',
+                              label: Text('Tv Show Name')),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    //Show Date
-                    // const Text('Pick Show Date',
-                    //     style: TextStyle(fontSize: 20)),
-                    // Text(
-                    //   '$_showDate'.split(' ')[0],
-                    //   style: const TextStyle(fontSize: 25),
-                    // ),
-                    // // const Divider(),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // ElevatedButton.icon(
-                    //   icon: Icon(Icons.lock_clock),
-                    //   label: Text('Show Date'),
-                    //   onPressed: () => _openDatePicker(context),
-                    // ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Divider(),
-                    //Show Time
-                    // const Text('Pick Show Time',
-                    //     style: TextStyle(fontSize: 20)),
-                    // Text(
-                    //   '${_showTime.hour}:${_showTime.minute}',
-                    //   style: const TextStyle(fontSize: 25),
-                    // ),
-                    // ElevatedButton(
-                    //     onPressed: () => _setTimeForShow(context),
-                    //     child: const Text('Show Date')),
-                  ]),
-                ),
-              ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: TextField(
+                          controller: _description,
+                          decoration: const InputDecoration(
+                              hintText: 'Description',
+                              label: Text('Description')),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      //Show Date
+                      const Text('Pick Show Date',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '$_showDate'.split(' ')[0],
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      // const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.lock_clock),
+                        label: const Text('Show Date'),
+                        onPressed: () => _openDatePicker(context),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divider(),
+                      //Show Time
+                      const Text('Pick Show Time',
+                          style: TextStyle(fontSize: 20)),
+                      Text(
+                        '${_showTime.hour}:${_showTime.minute}',
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                      ElevatedButton(
+                          onPressed: () => _setTimeForShow(context),
+                          child: const Text('Show Date')),
+                    ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -142,35 +149,37 @@ class _EditTvShoState extends State<EditTvShow> {
     );
   }
 
-  // _openDatePicker(BuildContext context) async {
-  //   final DateTime? date = await showDatePicker(
-  //       context: context,
-  //       initialDate: _showDate,
-  //       firstDate: firstDate,
-  //       lastDate: lastDate);
+  //Date Picker
+  _openDatePicker(BuildContext context) async {
+    final DateTime? date = await showDatePicker(
+        context: context,
+        initialDate: _showDate,
+        firstDate: firstDate,
+        lastDate: lastDate);
 
-  //   if (date == null) {
-  //     print("No Date Selected");
-  //   } else {
-  //     print(date);
-  //     setState(() {
-  //       _showDate = date;
-  //     });
-  //   }
-  // }
+    if (date == null) {
+      print("No Date Selected");
+    } else {
+      print(date);
+      setState(() {
+        _showDate = date;
+      });
+    }
+  }
 
-  // _setTimeForShow(BuildContext context) async {
-  //   final TimeOfDay? time =
-  //       await showTimePicker(context: context, initialTime: _showTime);
-  //   if (time == null) {
-  //     print("No Time Selected");
-  //   } else {
-  //     print(_showTime);
-  //     setState(() {
-  //       _showTime = time;
-  //     });
-  //   }
-  // }
+  //Time Picker
+  _setTimeForShow(BuildContext context) async {
+    final TimeOfDay? time =
+        await showTimePicker(context: context, initialTime: _showTime);
+    if (time == null) {
+      print("No Time Selected");
+    } else {
+      print(_showTime);
+      setState(() {
+        _showTime = time;
+      });
+    }
+  }
 
   //Delete Confirm Dialog Box
   Future<void> _confirmDelete() async {

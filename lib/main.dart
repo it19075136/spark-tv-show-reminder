@@ -5,7 +5,6 @@ import 'package:spark_tv_shows/pages/channels/channels.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
 import 'package:spark_tv_shows/pages/signUp/register.dart';
-import 'package:spark_tv_shows/pages/tvShow/tvShowList.dart';
 import 'package:spark_tv_shows/pages/userScreens/myChannels.dart';
 import 'package:spark_tv_shows/pages/userScreens/myReminders.dart';
 import 'package:spark_tv_shows/pages/userScreens/myShowsList.dart';
@@ -18,6 +17,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   //Initialized firebase to the project
   WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(options: DefaultFirebaseConfig.platformOptions);
+  runApp(const MyApp());
 
   var initializationSettingsAndroid = AndroidInitializationSettings('codex_logo');
   var initializationSettingsIOS = IOSInitializationSettings(
@@ -28,7 +29,8 @@ Future<void> main() async {
     );
 
     var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid, iOS: initializationSettingsIOS
+      android: initializationSettingsAndroid
+        , iOS: initializationSettingsIOS
     );
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -39,9 +41,9 @@ Future<void> main() async {
       },
     );
 
-  await Firebase.initializeApp(options: DefaultFirebaseConfig.platformOptions);
+  // await Firebase.initializeApp(options: DefaultFirebaseConfig.platformOptions);
   // await Firebase.initializeApp();
-  runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {

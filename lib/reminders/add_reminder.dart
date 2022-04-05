@@ -10,35 +10,6 @@ import 'package:spark_tv_shows/services/reminders/reminderService.dart';
 import '../services/channels/channelServices.dart';
 import '../services/user/userServices.dart';
 
-void scheduleReminder() async {
-
-  print("scheduleReminder func works");
-  var sceduledNotificationDateTime = 
-  DateTime.now().add(Duration(seconds: 10));
-
-var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  'alarm_notif',
-  'alarm_notif',
-  'Channel for Alarm notify',
-  icon: 'codex_logo',
-  sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
-  largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
-   );
-
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-    sound: 'a_long_cold_sting.wav',
-    presentAlert: true,
-    presentBadge: true,
-    presentSound: true
-  );
-
-  var platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics
-  );
-
-  await flutterLocalNotificationsPlugin.schedule(
-    0, "Office", "Good Morning", sceduledNotificationDateTime, platformChannelSpecifics);
-}
 
 class AddReminder extends StatefulWidget {
 
@@ -89,6 +60,37 @@ void initState(){
   fetchShowId();
 }
 
+void scheduleReminder() async {
+
+  print("scheduleReminder func works");
+  var sceduledNotificationDateTime = 
+  DateTime.now().add(Duration(seconds: 10));
+
+var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  'alarm_notif',
+  'alarm_notif',
+  'Channel for Alarm notify',
+  icon: 'codex_logo',
+  sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+  largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
+   );
+
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+    sound: 'a_long_cold_sting.wav',
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true
+  );
+
+  var platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics
+  );
+
+  await flutterLocalNotificationsPlugin.schedule(
+    0, "Office", "Good Afternoon", sceduledNotificationDateTime, platformChannelSpecifics); 
+}
+
+
 fetchShowId() async {
 
   QuerySnapshot querySnapshot = await reminders.get();
@@ -125,12 +127,11 @@ fetchShowId() async {
               {
                 value.docs.forEach((e) {
                   if (element == e.id && e.get("showId") == widget.docid.id) {
+                    print('reminderDate');
+                    print(e.get('reminderDate'));
                     setState(() {
                       isReminderExist = true;
                       existReminderId = e.id;
-                      print("existReminderId");                
-                      print(existReminderId);
-
                     });
                   }
                 })
@@ -185,8 +186,14 @@ setState(() {
           ),
           const Divider(),
           ListTile(
-            title: const Text(
-              'Test Text',
+            title: isReminderExist ?
+            const Text(
+              'You are already subscribed to this show',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            )
+              :
+              const Text(
+              'Subscribe to this show to enable a reminder',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             leading: Icon(
@@ -194,41 +201,43 @@ setState(() {
               color: Colors.blue[500],
             ),
           ),
-          ListTile(
-            title: const Text('This text is also for testing'),
-            leading: Icon(
-              Icons.contact_mail,
-              color: Colors.blue[500],
-            ),
-          ),
+          // ListTile(
+          //   title: const Text('This text is also for testing'),
+          //   leading: Icon(
+          //     Icons.contact_mail,
+          //     color: Colors.blue[500],
+          //   ),
+          // ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 10)),
                 onPressed: () async {  
-                  isReminderExist ? 
+                  isReminderExist ?
              
                     // print("remove from array method");
-                    //  await FirebaseFirestore.instance.collection("user").doc(userId).update({"reminders":FieldValue.arrayRemove([existReminderId])}).then((value) => reminderList.remove(existReminderId))
-                    //  .then((value) => {
-                    //    Navigator.pop(context)
-                    //  })
+                     await FirebaseFirestore.instance.collection("user").doc(userId).update({"reminders":FieldValue.arrayRemove([existReminderId])}).then((value) => reminderList.remove(existReminderId))
+                     .then((value) => {
+                       Navigator.pop(context)
+                     })
 
-                    scheduleReminder()
+                    // scheduleReminder();
                   
-                  :                
+                  :
                   reminders.add({
                     'tvShowName': tvShowName.text,
                     'reminderDate': DateTime.parse(
                             widget.docid.get('showDate').toDate().toString())
                         .toString(),
                       'showId': widget.docid.id,
-                      'userId' : userId  
+                      'userId' : userId
                   }).then((value) {
                       FirebaseFirestore.instance.collection("user").doc(userId).update({"reminders": FieldValue.arrayUnion([value.id])});
-                  });
-                  // .whenComplete(() {
-                  //   Navigator.pushReplacement(context,
-                  //       MaterialPageRoute(builder: (_) => TvShowList(channelDoc);
-                  // })
+                  }).then((value) => 
+                    Navigator.pop(context)
+                  );
+                //   .whenComplete(() {
+                //     Navigator.pushReplacement(context,
+                //         MaterialPageRoute(builder: (_) => TvShowList(channelDoc);
+                //   })
                 //   .whenComplete(() {
                 //     ()async{
                 //       reminderList.contains(snapshot.data!.docs[index].id) ? 

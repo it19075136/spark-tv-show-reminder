@@ -45,6 +45,7 @@ dependencies:
   fluttertoast: ^8.0.9
   flutter_clean_calendar: ^1.1.0
   flutter_local_notifications: ^8.2.0
+  flutter_native_timezone: ^2.0.0
 
 
 dev_dependencies:
