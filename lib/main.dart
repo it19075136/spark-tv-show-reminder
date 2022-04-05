@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:spark_tv_shows/pages/channels.dart';
+import 'package:spark_tv_shows/pages/channels/channels.dart';
 import 'package:spark_tv_shows/constants.dart';
 import 'package:spark_tv_shows/pages/login/login.dart';
 import 'package:spark_tv_shows/pages/signUp/register.dart';
