@@ -27,8 +27,9 @@ class _EditTvShoState extends State<EditTvShow> {
     _description = TextEditingController(text: widget.docid.get('description'));
     _channelID = TextEditingController(text: widget.docid.get('channel'));
     Timestamp showTimestamp = widget.docid.get('showDate');
-    _showDate =  DateTime.parse(showTimestamp.toDate().toString());
-    _showTime = TimeOfDay.fromDateTime(DateTime.parse(showTimestamp.toDate().toString()));
+    _showDate = DateTime.parse(showTimestamp.toDate().toString());
+    _showTime = TimeOfDay.fromDateTime(
+        DateTime.parse(showTimestamp.toDate().toString()));
     super.initState();
   }
 
@@ -40,35 +41,36 @@ class _EditTvShoState extends State<EditTvShow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        MaterialButton(
-          onPressed: () {
-            widget.docid.reference.update({
-              'tvShowName': _tvShowName.text,
-              'description': _description.text,
-              'showDate': setDateTime(_showDate, _showTime),
-            }).whenComplete(() {
-              Fluttertoast.showToast(
-                  msg: "Successfully Updated!",
-                  backgroundColor: Colors.green,
-                  textColor: kPrimaryLightColor,
-                  gravity: ToastGravity.BOTTOM_RIGHT,
-                  webBgColor: "#25eb1e",
-                  timeInSecForIosWeb: 2,
-                  toastLength: Toast.LENGTH_LONG);
-            });
-          },
-          child: const Text("Save"),
-        ),
-         
-        MaterialButton(
-          onPressed: () {
-            _confirmDelete();
-          },
-          child: const Text("delete"),
-        )
-      ],
-      title: const Text("Edit Tv Show"),),
+      appBar: AppBar(
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              widget.docid.reference.update({
+                'tvShowName': _tvShowName.text,
+                'description': _description.text,
+                'showDate': setDateTime(_showDate, _showTime),
+              }).whenComplete(() {
+                Fluttertoast.showToast(
+                    msg: "Successfully Updated!",
+                    backgroundColor: Colors.green,
+                    textColor: kPrimaryLightColor,
+                    gravity: ToastGravity.BOTTOM_RIGHT,
+                    webBgColor: "#25eb1e",
+                    timeInSecForIosWeb: 2,
+                    toastLength: Toast.LENGTH_LONG);
+              });
+            },
+            child: const Text("Save"),
+          ),
+          MaterialButton(
+            onPressed: () {
+              _confirmDelete();
+            },
+            child: const Text("delete"),
+          )
+        ],
+        title: const Text("Edit Tv Show"),
+      ),
       body: Container(
         child: Center(
           child: Form(
