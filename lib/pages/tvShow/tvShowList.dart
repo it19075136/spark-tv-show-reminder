@@ -122,23 +122,33 @@ class _TvShowListState extends State<TvShowList> {
                                       ? Colors.red
                                       : Colors.grey),
                               onPressed: () async {
-                                showList.contains(snapshot.data!.docs[index].id)
-                                    ? (await FirebaseFirestore.instance
-                                        .collection("user")
-                                        .doc(userId)
-                                        .update({
-                                        "shows": FieldValue.arrayRemove(
-                                            [snapshot.data!.docs[index].id])
-                                      }).then((value) => showList.remove(
-                                            snapshot.data!.docs[index].id)))
-                                    : (await FirebaseFirestore.instance
-                                        .collection("user")
-                                        .doc(userId)
-                                        .update({
-                                        "shows": FieldValue.arrayUnion(
-                                            [snapshot.data!.docs[index].id])
-                                      }).then((value) => showList.add(
-                                            snapshot.data!.docs[index].id)));
+                                if (showList
+                                    .contains(snapshot.data!.docs[index].id)) {
+                                  (await FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(userId)
+                                      .update({
+                                    "shows": FieldValue.arrayRemove(
+                                        [snapshot.data!.docs[index].id])
+                                  }).then((value) => showList.remove(
+                                          snapshot.data!.docs[index].id)));
+                                  setState(() {
+                                    showList
+                                        .remove(snapshot.data!.docs[index].id);
+                                  });
+                                } else {
+                                  setState(() {
+                                    showList.add(snapshot.data!.docs[index].id);
+                                  });
+                                  await FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(userId)
+                                      .update({
+                                    "shows": FieldValue.arrayUnion(
+                                        [snapshot.data!.docs[index].id])
+                                  }).then((value) => showList
+                                          .add(snapshot.data!.docs[index].id));
+                                }
                               },
                             )),
                       ),
