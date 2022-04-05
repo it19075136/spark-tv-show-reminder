@@ -88,7 +88,6 @@ class _ChannelsState extends State<Channels> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        // Icon(Icons.subscript),
                         Image.network(
                             snapshot.data!.docChanges[index].doc["image"],
                             width: 100,
@@ -98,15 +97,9 @@ class _ChannelsState extends State<Channels> {
                         ),
                         Text(
                           snapshot.data!.docChanges[index].doc["name"],
-                          // style: TextStyle(
-                          //     fontSize: 20
-                          // ),
                         ),
                         Text(
                           snapshot.data!.docChanges[index].doc["description"],
-                          // style: TextStyle(
-                          //     fontSize: 20
-                          // ),
                         ),
                         if (type == 'admin')
                           (MaterialButton(
@@ -160,7 +153,9 @@ class _ChannelsState extends State<Channels> {
                                 }
                               },
                               child: channelsList
-                                  .contains(snapshot.data!.docs[index].id)?Text("Unsubscribe"):Text("Subscribe"),
+                                      .contains(snapshot.data!.docs[index].id)
+                                  ? Text("Unsubscribe")
+                                  : Text("Subscribe"),
                               color: channelsList
                                       .contains(snapshot.data!.docs[index].id)
                                   ? Colors.grey
