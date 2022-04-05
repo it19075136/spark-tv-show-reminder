@@ -48,49 +48,55 @@ class _AddTvShowState extends State<AddTvShow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Tv Show'), actions: [
-        MaterialButton(
-          onPressed: () async{
-            if (image != null &&
-                _tvShowName.text != "" &&
-                _description.text != "" &&
-                widget.channelId != "") {
-              final imageRef = FirebaseStorage.instance.ref().child("tvshowImages").child(_tvShowName.text+'.jpg');
+      appBar: AppBar(
+        title: const Text('Add Tv Show'),
+        actions: [
+          MaterialButton(
+            onPressed: () async {
+              if (image != null &&
+                  _tvShowName.text != "" &&
+                  _description.text != "" &&
+                  widget.channelId != "") {
+                final imageRef = FirebaseStorage.instance
+                    .ref()
+                    .child("tvshowImages")
+                    .child(_tvShowName.text + '.jpg');
 
-              await imageRef.putFile(image!);
-              url = await imageRef.getDownloadURL();
-              ref.add({
-                'tvShowName': _tvShowName.text,
-                'description': _description.text,
-                'showDate': setDateTime(_showDate, _showTime),
-                'channel': widget.channelId,
-                'image': url
-              }).whenComplete(() {
+                await imageRef.putFile(image!);
+                url = await imageRef.getDownloadURL();
+                ref.add({
+                  'tvShowName': _tvShowName.text,
+                  'description': _description.text,
+                  'showDate': setDateTime(_showDate, _showTime),
+                  'channel': widget.channelId,
+                  'image': url
+                }).whenComplete(() {
+                  Fluttertoast.showToast(
+                      msg: "Tv Show Successfully Added!",
+                      backgroundColor: Colors.green,
+                      textColor: kPrimaryLightColor,
+                      gravity: ToastGravity.BOTTOM_RIGHT,
+                      webBgColor: "#25eb1e",
+                      timeInSecForIosWeb: 2,
+                      toastLength: Toast.LENGTH_LONG);
+                });
+              } else {
                 Fluttertoast.showToast(
-                    msg: "Tv Show Successfully Added!",
-                    backgroundColor: Colors.green,
+                    msg: "Tv Show Unsuccessful!",
+                    backgroundColor: Colors.red,
                     textColor: kPrimaryLightColor,
                     gravity: ToastGravity.BOTTOM_RIGHT,
-                    webBgColor: "#25eb1e",
+                    webBgColor: "#d8392b",
                     timeInSecForIosWeb: 2,
                     toastLength: Toast.LENGTH_LONG);
-              });
-            } else {
-              Fluttertoast.showToast(
-                  msg: "Tv Show Unsuccessful!",
-                  backgroundColor: Colors.red,
-                  textColor: kPrimaryLightColor,
-                  gravity: ToastGravity.BOTTOM_RIGHT,
-                  webBgColor: "#d8392b",
-                  timeInSecForIosWeb: 2,
-                  toastLength: Toast.LENGTH_LONG);
-            }
-          },
-          child: const Text(
-            "save",
-          ),
-        )
-      ],),
+              }
+            },
+            child: const Text(
+              "save",
+            ),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Container(
           child: Center(
@@ -124,13 +130,12 @@ class _AddTvShowState extends State<AddTvShow> {
                         height: 10,
                       ),
                       Container(
-                        child: TextField(
-                          controller: _tvShowName,
-                          decoration: const InputDecoration(
-                              hintText: 'TV Show Name',
-                              label: Text('Tv Show Name')),
-                        )
-                      ),
+                          child: TextField(
+                        controller: _tvShowName,
+                        decoration: const InputDecoration(
+                            hintText: 'TV Show Name',
+                            label: Text('Tv Show Name')),
+                      )),
                       const SizedBox(
                         height: 10,
                       ),
@@ -201,6 +206,7 @@ class _AddTvShowState extends State<AddTvShow> {
       });
     }
   }
+
 //Time Picker
   _setTimeForShow(BuildContext context) async {
     final TimeOfDay? time =
