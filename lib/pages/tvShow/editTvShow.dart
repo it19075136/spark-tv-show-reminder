@@ -28,6 +28,7 @@ class _EditTvShoState extends State<EditTvShow> {
     _channelID = TextEditingController(text: widget.docid.get('channel'));
     Timestamp showTimestamp = widget.docid.get('showDate');
     _showDate =  DateTime.parse(showTimestamp.toDate().toString());
+    _showTime = TimeOfDay.fromDateTime(DateTime.parse(showTimestamp.toDate().toString()));
     super.initState();
   }
 
@@ -45,10 +46,7 @@ class _EditTvShoState extends State<EditTvShow> {
             widget.docid.reference.update({
               'tvShowName': _tvShowName.text,
               'description': _description.text,
-              // 'showDate': setDateTime(_showDate, _showTime),
-              // 'time': time.text,
-              // 'date': date.text,
-              // 'channel': channel.text,
+              'showDate': setDateTime(_showDate, _showTime),
             }).whenComplete(() {
               Fluttertoast.showToast(
                   msg: "Successfully Updated!",
@@ -62,13 +60,15 @@ class _EditTvShoState extends State<EditTvShow> {
           },
           child: const Text("Save"),
         ),
+         
         MaterialButton(
           onPressed: () {
             _confirmDelete();
           },
           child: const Text("delete"),
         )
-      ]),
+      ],
+      title: const Text("Edit Tv Show"),),
       body: Container(
         child: Center(
           child: Form(
@@ -103,35 +103,35 @@ class _EditTvShoState extends State<EditTvShow> {
                       height: 20,
                     ),
                     //Show Date
-                    // const Text('Pick Show Date',
-                    //     style: TextStyle(fontSize: 20)),
-                    // Text(
-                    //   '$_showDate'.split(' ')[0],
-                    //   style: const TextStyle(fontSize: 25),
-                    // ),
-                    // // const Divider(),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // ElevatedButton.icon(
-                    //   icon: Icon(Icons.lock_clock),
-                    //   label: Text('Show Date'),
-                    //   onPressed: () => _openDatePicker(context),
-                    // ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Divider(),
+                    const Text('Pick Show Date',
+                        style: TextStyle(fontSize: 20)),
+                    Text(
+                      '$_showDate'.split(' ')[0],
+                      style: const TextStyle(fontSize: 25),
+                    ),
+                    // const Divider(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.lock_clock),
+                      label: Text('Show Date'),
+                      onPressed: () => _openDatePicker(context),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Divider(),
                     //Show Time
-                    // const Text('Pick Show Time',
-                    //     style: TextStyle(fontSize: 20)),
-                    // Text(
-                    //   '${_showTime.hour}:${_showTime.minute}',
-                    //   style: const TextStyle(fontSize: 25),
-                    // ),
-                    // ElevatedButton(
-                    //     onPressed: () => _setTimeForShow(context),
-                    //     child: const Text('Show Date')),
+                    const Text('Pick Show Time',
+                        style: TextStyle(fontSize: 20)),
+                    Text(
+                      '${_showTime.hour}:${_showTime.minute}',
+                      style: const TextStyle(fontSize: 25),
+                    ),
+                    ElevatedButton(
+                        onPressed: () => _setTimeForShow(context),
+                        child: const Text('Show Date')),
                   ]),
                 ),
               ],
@@ -142,35 +142,37 @@ class _EditTvShoState extends State<EditTvShow> {
     );
   }
 
-  // _openDatePicker(BuildContext context) async {
-  //   final DateTime? date = await showDatePicker(
-  //       context: context,
-  //       initialDate: _showDate,
-  //       firstDate: firstDate,
-  //       lastDate: lastDate);
+//Date Picker
+  _openDatePicker(BuildContext context) async {
+    final DateTime? date = await showDatePicker(
+        context: context,
+        initialDate: _showDate,
+        firstDate: firstDate,
+        lastDate: lastDate);
 
-  //   if (date == null) {
-  //     print("No Date Selected");
-  //   } else {
-  //     print(date);
-  //     setState(() {
-  //       _showDate = date;
-  //     });
-  //   }
-  // }
+    if (date == null) {
+      print("No Date Selected");
+    } else {
+      print(date);
+      setState(() {
+        _showDate = date;
+      });
+    }
+  }
 
-  // _setTimeForShow(BuildContext context) async {
-  //   final TimeOfDay? time =
-  //       await showTimePicker(context: context, initialTime: _showTime);
-  //   if (time == null) {
-  //     print("No Time Selected");
-  //   } else {
-  //     print(_showTime);
-  //     setState(() {
-  //       _showTime = time;
-  //     });
-  //   }
-  // }
+//Time Picker
+  _setTimeForShow(BuildContext context) async {
+    final TimeOfDay? time =
+        await showTimePicker(context: context, initialTime: _showTime);
+    if (time == null) {
+      print("No Time Selected");
+    } else {
+      print(_showTime);
+      setState(() {
+        _showTime = time;
+      });
+    }
+  }
 
   //Delete Confirm Dialog Box
   Future<void> _confirmDelete() async {

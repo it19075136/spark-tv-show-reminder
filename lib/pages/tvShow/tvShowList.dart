@@ -6,7 +6,7 @@ import 'package:spark_tv_shows/pages/tvShow/addTvShow.dart';
 import 'package:spark_tv_shows/pages/tvShow/editTvShow.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
 
-class TvShowList extends StatefulWidget { 
+class TvShowList extends StatefulWidget {
   DocumentSnapshot channelDoc;
   TvShowList({Key? key, required this.channelDoc}) : super(key: key);
 
@@ -17,25 +17,24 @@ class TvShowList extends StatefulWidget {
 class _TvShowListState extends State<TvShowList> {
   final CollectionReference userRef =
       FirebaseFirestore.instance.collection('user');
-  
-  bool _subscribed = false;
 
+  List showList = [];
   //Get Logged in User
   String userId = "";
-  String type  = "";
+  String type = "";
   TextEditingController _userType = TextEditingController();
   TextEditingController _userName = TextEditingController();
-  
+
   Stream<QuerySnapshot> _userStream = new Stream.empty();
- 
 
   @override
   void initState() {
-    _userStream =
-      FirebaseFirestore.instance.collection('shows').where('channel', isEqualTo: widget.channelDoc.id).snapshots();
+    _userStream = FirebaseFirestore.instance
+        .collection('shows')
+        .where('channel', isEqualTo: widget.channelDoc.id)
+        .snapshots();
     super.initState();
     getUserData();
-
   }
 
   getUserData() async {
@@ -46,22 +45,28 @@ class _TvShowListState extends State<TvShowList> {
     setState(() {
       type = user["type"];
     });
+    setState(() {
+      showList = user["shows"];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: type == 'admin' ? FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => AddTvShow(
-                channelId: widget.channelDoc.id
-              )));
-        },
-        child: const Icon(
-          Icons.add,
-        ),
-      ):null,
+      floatingActionButton: type == 'admin'
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            AddTvShow(channelId: widget.channelDoc.id)));
+              },
+              child: const Icon(
+                Icons.add,
+              ),
+            )
+          : null,
       appBar: AppBar(
         title: const Text('Tv Shows'),
       ),
@@ -107,20 +112,33 @@ class _TvShowListState extends State<TvShowList> {
                                     .split(' ')[0]),
                             subtitle: Text(snapshot
                                 .data!.docChanges[index].doc['description']),
-                            leading: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://images.unsplash.com/photo-1547721064-da6cfb341d50")),
+                            leading: CircleAvatar(
+                                backgroundImage: NetworkImage(snapshot
+                                    .data!.docChanges[index].doc['image'])),
                             trailing: IconButton(
                               icon: Icon(Icons.notifications,
-                                  color: _subscribed == true
+                                  color: showList.contains(
+                                          snapshot.data!.docs[index].id)
                                       ? Colors.red
                                       : Colors.grey),
-                              onPressed: () {
-                                setState(() {
-                                  _subscribed = !_subscribed;
-                                  addTvToUser(
-                                      userId, snapshot.data!.docs[index]);
-                                });
+                              onPressed: () async {
+                                showList.contains(snapshot.data!.docs[index].id)
+                                    ? (await FirebaseFirestore.instance
+                                        .collection("user")
+                                        .doc(userId)
+                                        .update({
+                                        "shows": FieldValue.arrayRemove(
+                                            [snapshot.data!.docs[index].id])
+                                      }).then((value) => showList.remove(
+                                            snapshot.data!.docs[index].id)))
+                                    : (await FirebaseFirestore.instance
+                                        .collection("user")
+                                        .doc(userId)
+                                        .update({
+                                        "shows": FieldValue.arrayUnion(
+                                            [snapshot.data!.docs[index].id])
+                                      }).then((value) => showList.add(
+                                            snapshot.data!.docs[index].id)));
                               },
                             )),
                       ),
@@ -131,31 +149,5 @@ class _TvShowListState extends State<TvShowList> {
             );
           }),
     );
-  }
-
-  // Widget _getFAB() {
-  //   if ( _userType.text ==  "admin") {
-  //     return FloatingActionButton(
-  //       onPressed: () {
-  //         // Navigator.pushReplacement(
-  //         //     context, MaterialPageRoute(builder: (_) => AddTvShow(
-  //         //       channelID: channelID,
-  //         //     )));
-  //       },
-  //       child: const Icon(
-  //         Icons.add,
-  //       ),
-  //     );
-  //   } else {
-  //     return Container();
-  //   }
-  // }
-
-  Future addTvToUser(String uid, dynamic tvShowId) async {
-    try {
-      return await userRef.doc(uid).update({"tvShows": tvShowId});
-    } catch (error) {
-      print(error.toString());
-    }
   }
 }
