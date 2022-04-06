@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spark_tv_shows/services/auth/firebaseAuth.dart';
 
 class UserServices {
 
@@ -32,6 +33,17 @@ class UserServices {
         "name": name,
         "phone": phone
       });
+    }
+    catch (err) {
+      print(err.toString());
+      return "error";
+    }
+  }
+
+  Future deleteUser( String uid) async {
+    try {
+      await userRef.doc(uid).delete();
+      return await FirebaseAuthentication().deleteAndLogout();
     }
     catch (err) {
       print(err.toString());
