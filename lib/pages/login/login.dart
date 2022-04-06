@@ -30,6 +30,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: kPrimaryLightColor,
         child: Center(
@@ -184,9 +185,9 @@ class _LoginState extends State<Login> {
                   if (_dialogKey.currentState!.validate()) {
                     dynamic result =
                         await _auth.resetPassword(_emailController.text);
-                    if (result == null) {
+                    if (result.toString().contains("err:")) {
                       Fluttertoast.showToast(
-                          msg: "Action failed, insert a correct email!",
+                          msg: result.toString().split("]")[1],
                           backgroundColor: Colors.redAccent,
                           textColor: kPrimaryLightColor,
                           gravity: ToastGravity.BOTTOM_RIGHT,

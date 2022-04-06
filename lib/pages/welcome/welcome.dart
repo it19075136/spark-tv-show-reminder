@@ -157,6 +157,34 @@ class _WelcomeState extends State<Welcome> {
             actions: [
               IconButton(
                   onPressed: () async {
+                    dynamic result = await UserServices().deleteUser(userId);
+                    if(result == "error") {
+                      Fluttertoast.showToast(
+                          msg: "Profile deletion failed!",
+                          backgroundColor: Colors.redAccent,
+                          textColor: kPrimaryLightColor,
+                          gravity: ToastGravity.BOTTOM_RIGHT,
+                          webBgColor: "#d8392b",
+                          timeInSecForIosWeb: 2,
+                          toastLength: Toast.LENGTH_LONG
+                      );
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Delete Successful, logging out!",
+                        backgroundColor: Colors.greenAccent,
+                        textColor: kPrimaryLightColor,
+                        gravity: ToastGravity.BOTTOM_RIGHT,
+                        webBgColor: "#00cc00",
+                        timeInSecForIosWeb: 2,
+                        toastLength: Toast.LENGTH_LONG
+                    );
+                    }
+                    Navigator.pushNamed(context, "/login");
+                  },
+                  icon: const Icon(Icons.delete)
+              ),
+              IconButton(
+                  onPressed: () async {
                     if (_key.currentState!.validate()) {
                       dynamic result = await UserServices().updateUser(
                           userId, _nameController.text, _phoneController.text);
