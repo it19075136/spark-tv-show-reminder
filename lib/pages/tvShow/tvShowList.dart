@@ -185,9 +185,9 @@ class _TvShowListState extends State<TvShowList> {
                                     .split(' ')[0]),
                             subtitle: Text(snapshot
                                 .data!.docChanges[index].doc['description']),
-                            leading: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://images.unsplash.com/photo-1547721064-da6cfb341d50")),
+                            leading: CircleAvatar(
+                                backgroundImage: NetworkImage(snapshot
+                                    .data!.docChanges[index].doc['image'])),
                             trailing: Wrap(
                               spacing: 12,
                               children: <Widget>[
