@@ -2,9 +2,13 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:spark_tv_shows/pages/tvShow/addTvShow.dart';
 import 'package:spark_tv_shows/pages/tvShow/editTvShow.dart';
+import 'package:spark_tv_shows/pages/tvShow/notificationHelper.dart';
 import 'package:spark_tv_shows/services/user/userServices.dart';
+import '../../main.dart';
+import '../../reminders/add_reminder.dart';
 
 class TvShowList extends StatefulWidget {
   DocumentSnapshot channelDoc;
@@ -17,6 +21,15 @@ class TvShowList extends StatefulWidget {
 class _TvShowListState extends State<TvShowList> {
   final CollectionReference userRef =
       FirebaseFirestore.instance.collection('user');
+
+  CollectionReference reminders = FirebaseFirestore.instance.collection('reminders');
+
+  NotificationHelper nhelp = new NotificationHelper();
+  
+  List reminderList = [];
+  List reminderDateList = [];
+
+  bool _subscribed = false;
 
   List showList = [];
   String userId = "";
@@ -34,9 +47,48 @@ class _TvShowListState extends State<TvShowList> {
         .snapshots();
     super.initState();
     getUserData();
+    // scheduleReminder();
+
   }
 
-  //Get Logged in User Data
+   scheduleReminder( DateTime date, int id, String? showName) async {
+     print("reminder id and the date is");
+     print(date);
+      print(id);
+     
+    var sceduledNotificationDateTime =
+        DateTime.now().add(Duration(seconds: 5));
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm_notif',
+      'alarm_notif',
+      'Channel for Alarm notify',
+      icon: 'codex_logo',
+      sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+      largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        sound: 'a_long_cold_sting.wav',
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true);
+
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+
+        print("date.isBefore(DateTime.now())");
+        print(date.isBefore(DateTime.now()));
+
+    if (!date.isBefore(DateTime.now())) {
+      await flutterLocalNotificationsPlugin.schedule(id, showName,
+          "This is reminder for your show!", date, platformChannelSpecifics);
+    }
+ 
+  }
+
+  
   getUserData() async {
     User? getUser = FirebaseAuth.instance.currentUser;
     userId = getUser!.uid;
@@ -48,6 +100,27 @@ class _TvShowListState extends State<TvShowList> {
     setState(() {
       showList = user["shows"];
     });
+    setState(() {
+      reminderList = user["reminders"];
+    });
+
+       reminderList.forEach((element) {
+      reminders.get().then((value) => {
+            if (value != null)
+              {
+                value.docs.asMap().forEach((index,e) {
+                  if (element == e.id) {
+                    reminderDateList.add(e["reminderDate"]);
+                    scheduleReminder(DateTime.parse(e["reminderDate"]),index,e["tvShowName"]);
+                    // print(e.get("reminderDate"));
+                   
+                  }
+                })
+              }
+          });
+    });
+
+
   }
 
   @override
