@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:spark_tv_shows/pages/welcome/welcome.dart';
+import 'package:spark_tv_shows/pages/channels.dart';
 
 import '../../constants.dart';
 
@@ -83,7 +83,7 @@ class _AddTvShowState extends State<AddTvShow> {
                       toastLength: Toast.LENGTH_LONG);
                 });
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => const Welcome()));
+                    context, MaterialPageRoute(builder: (_) => const Channels()));
               } else {
                 Fluttertoast.showToast(
                     msg: "Tv Show Unsuccessful!",
