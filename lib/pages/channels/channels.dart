@@ -78,7 +78,7 @@ class _ChannelsState extends State<Channels> {
               itemBuilder: (_, index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (_) => TvShowList(

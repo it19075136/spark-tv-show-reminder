@@ -163,7 +163,7 @@ class _TvShowListState extends State<TvShowList> {
                 return GestureDetector(
                   onTap: () {
                     if (type == "admin") {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (_) => EditTvShow(

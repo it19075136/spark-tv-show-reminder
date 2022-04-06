@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:spark_tv_shows/pages/welcome/welcome.dart';
+import 'package:spark_tv_shows/pages/channels.dart';
 import '../../constants.dart';
 
 class EditTvShow extends StatefulWidget {
@@ -62,7 +62,7 @@ class _EditTvShoState extends State<EditTvShow> {
                     timeInSecForIosWeb: 2,
                     toastLength: Toast.LENGTH_LONG);
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => const Welcome()));
+                    context, MaterialPageRoute(builder: (_) => const Channels()));
               });
             },
             child: const Text("Save"),
@@ -218,7 +218,7 @@ class _EditTvShoState extends State<EditTvShow> {
                       context,
                       MaterialPageRoute(
                           builder: (_) =>
-                              const Welcome()
+                              const Channels()
                       ));
                 });
                 print('Confirmed');
