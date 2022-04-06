@@ -17,6 +17,7 @@ class MyRemindersList extends StatefulWidget {
 class _MyRemindersListState extends State<MyRemindersList> {
   List reminders = [];
   List reminderDataList = [];
+  bool loading = true;
 
   @override
   void initState() {
@@ -28,19 +29,34 @@ class _MyRemindersListState extends State<MyRemindersList> {
     User? getUser = FirebaseAuth.instance.currentUser;
     String userId = getUser!.uid;
     dynamic result;
-    LinkedHashMap<String, dynamic> user =
-        await UserServices().getLoggedInUser(userId);
-    if (user["reminders"] != null) {
-      reminders = user["reminders"];
+    try {
+      LinkedHashMap<String, dynamic> user =
+          await UserServices().getLoggedInUser(userId);
+      if (user["reminders"] != null) {
+        reminders = user["reminders"];
+      }
+    } catch (err) {
+      print(err);
+      setState(() {
+        loading = false;
+      });
     }
     List reminderData = [];
     for (var element in reminders) {
-      result =
-          await ReminderServices().getReminderById(element.toString().trim());
-      reminderData.add(result);
+      try {
+        result =
+            await ReminderServices().getReminderById(element.toString().trim());
+        reminderData.add(result);
+      } catch (err) {
+        print(err);
+        setState(() {
+          loading = false;
+        });
+      }
     }
     setState(() {
       reminderDataList = reminderData;
+      loading = false;
     });
   }
 
@@ -49,27 +65,27 @@ class _MyRemindersListState extends State<MyRemindersList> {
     return Scaffold(
       appBar: AppBar(
           title: const Text('Reminders'), backgroundColor: kPrimaryColor),
-      body: ListView.builder(
-          itemCount: reminderDataList.length,
-          itemBuilder: (context, index) {
-            if (reminderDataList[index] != null ||
-                reminderDataList.isNotEmpty) {
-              return Card(
-                child: ListTile(
-                  title: Text(reminderDataList[index]["name"]),
-                  trailing: Text(DateTime.parse(
-                          reminderDataList[index]["time"].toDate().toString())
-                      .toString()),
-                ),
-              );
-            } else {
-              return const Text("No Reminders",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center);
-            }
-          }),
+      body: reminderDataList.isNotEmpty && !loading
+          ? ListView.builder(
+              itemCount: reminderDataList.length,
+              itemBuilder: (context, index) {
+                if (reminderDataList[index] != null ||
+                    reminderDataList.isNotEmpty) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(reminderDataList[index]["tvShowName"]),
+                      trailing: Text(reminderDataList[index]["reminderDate"]),
+                    ),
+                  );
+                } else {
+                  return const Text("No Reminders",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center);
+                }
+              })
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

@@ -38,13 +38,23 @@ Future logout() async {
     }
 }
 
+  Future deleteAndLogout() async {
+    try {
+      return _auth.currentUser?.delete();
+    }
+    catch (err) {
+      print(err.toString());
+      return null;
+    }
+  }
+
 Future resetPassword(String email) async {
     try {
       return await _auth.sendPasswordResetEmail(email: email);
     }
     catch (err) {
       print(err.toString());
-      return null;
+      return "err:"+err.toString();
     }
 }
 

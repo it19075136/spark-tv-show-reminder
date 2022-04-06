@@ -32,155 +32,160 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: kPrimaryLightColor,
         child: Center(
           child: Form(
             key: _key,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Register',
-                  style: TextStyle(
-                    color: kPrimaryColor,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                TextButton(
-                    child: const Text('Have an account? Sign in'),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => const Login(),
-                        ),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                        primary: kPrimaryColor,
-                        textStyle: const TextStyle(
-                            fontStyle: FontStyle.italic,
-                            decoration: TextDecoration.underline))),
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Padding(
+                  padding: const EdgeInsets.all(0.0),
                   child: Column(
                     children: [
-                      TextFormField(
-                        controller: _nameController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Name is required!';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            labelText: 'Name',
-                            labelStyle: TextStyle(
-                              color: kPrimaryColor,
-                            )),
-                        style: const TextStyle(
-                          color: Colors.black,
+                      const Text(
+                        'Register',
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Email is required!';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: TextStyle(color: kPrimaryColor)),
-                        style: const TextStyle(
-                          color: Colors.black,
+                      const SizedBox(height: 5),
+                      TextButton(
+                          child: const Text('Have an account? Sign in'),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                fullscreenDialog: true,
+                                builder: (context) => const Login(),
+                              ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                              primary: kPrimaryColor,
+                              textStyle: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  decoration: TextDecoration.underline))),
+                      Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _nameController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Name is required!';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  labelStyle: TextStyle(
+                                    color: kPrimaryColor,
+                                  )),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              controller: _emailController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Email is required!';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(color: kPrimaryColor)),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                                controller: _passwordController,
+                                obscureText: !_showPass,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Password is required!';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle:
+                                      const TextStyle(color: kPrimaryColor),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(_showPass
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                    onPressed: () {
+                                      setState(() {
+                                        _showPass = !_showPass;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                )),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              controller: _phoneController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Phone is required!';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                  labelText: 'Phone',
+                                  labelStyle: TextStyle(color: kPrimaryColor)),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                TextButton(
+                                  child: const Text('Sign Up'),
+                                  onPressed: () {
+                                    if (_key.currentState!.validate()) {
+                                      insertUser();
+                                    }
+                                  },
+                                  style: TextButton.styleFrom(
+                                      primary: kPrimaryLightColor,
+                                      backgroundColor: kPrimaryColor),
+                                ),
+                                const SizedBox(width: 10),
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  style: TextButton.styleFrom(
+                                      primary: kPrimaryLightColor,
+                                      backgroundColor: kPrimaryColor),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: !_showPass,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Password is required!';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          labelStyle: const TextStyle(color: kPrimaryColor),
-                          suffixIcon: IconButton(
-                            icon: Icon(_showPass
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            onPressed: () {
-                              setState(() {
-                                _showPass = !_showPass;
-                              });
-                            },
-                          ),
-                        ),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        )
-                      ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: _phoneController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Phone is required!';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            labelText: 'Phone',
-                            labelStyle: TextStyle(color: kPrimaryColor)),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          TextButton(
-                            child: const Text('Sign Up'),
-                            onPressed: () {
-                              if (_key.currentState!.validate()) {
-                                insertUser();
-                              }
-                            },
-                            style: TextButton.styleFrom(
-                                primary: kPrimaryLightColor,
-                                backgroundColor: kPrimaryColor),
-                          ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            child: const Text('Cancel'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: TextButton.styleFrom(
-                                primary: kPrimaryLightColor,
-                                backgroundColor: kPrimaryColor),
-                          )
-                        ],
                       ),
                     ],
-                  ),
-                ),
-              ],
-            ),
+                  ))
+            ]),
           ),
         ),
       ),
