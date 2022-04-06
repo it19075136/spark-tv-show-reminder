@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,7 @@ class _AddTvShowState extends State<AddTvShow> {
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
 
-  //Refernce to the 'shows' collection
+  //Reference to the 'shows' collection
   CollectionReference ref = FirebaseFirestore.instance.collection('shows');
 
   File? image;
@@ -111,8 +110,8 @@ class _AddTvShowState extends State<AddTvShow> {
                     padding: const EdgeInsets.all(32.0),
                     child: Column(children: [
                       Container(
-                        margin:
-                            const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 30, horizontal: 30),
                         child: InkWell(
                           onTap: () => pickImage(),
                           child: image == null
