@@ -143,115 +143,117 @@ class _TvShowListState extends State<TvShowList> {
       appBar: AppBar(
         title: const Text('Tv Shows'),
       ),
-      body: StreamBuilder(
-          stream: _userStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Text("Something is wrong");
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (_, index) {
-                Timestamp showDate =
-                    snapshot.data!.docChanges[index].doc['showDate'];
-                return GestureDetector(
-                  onTap: () {
-                    if (type == "admin") {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => EditTvShow(
-                                    docid: snapshot.data!.docs[index],
-                                  )));
-                    } else {
-                      null;
-                    }
-                  },
-                  child: Column(
-                    children: [
-                      Card(
-                        child: ListTile(
-                            title: Text(snapshot
-                                    .data!.docChanges[index].doc['tvShowName'] +
-                                " - " +
-                                DateTime.parse(showDate.toDate().toString())
-                                    .toString()
-                                    .split(' ')[0]),
-                            subtitle: Text(snapshot
-                                .data!.docChanges[index].doc['description']),
-                            leading: CircleAvatar(
-                                backgroundImage: NetworkImage(snapshot
-                                    .data!.docChanges[index].doc['image'])),
-                            trailing: Wrap(
-                              spacing: 12,
-                              children: <Widget>[
-                              IconButton(
-                              icon: Icon(Icons.notifications,
-                                  color: showList.contains(
-                                          snapshot.data!.docs[index].id)
-                                      ? Colors.red
-                                      : Colors.grey),
-                              onPressed: () async {
-                                if (showList
-                                    .contains(snapshot.data!.docs[index].id)) {
-                                  (await FirebaseFirestore.instance
-                                      .collection("user")
-                                      .doc(userId)
-                                      .update({
-                                    "shows": FieldValue.arrayRemove(
-                                        [snapshot.data!.docs[index].id])
-                                  }).then((value) => showList.remove(
-                                          snapshot.data!.docs[index].id)));
-                                  setState(() {
-                                    showList
-                                        .remove(snapshot.data!.docs[index].id);
-                                  });
-                                } else {
-                                  setState(() {
-                                    showList.add(snapshot.data!.docs[index].id);
-                                  });
-                                  await FirebaseFirestore.instance
-                                      .collection("user")
-                                      .doc(userId)
-                                      .update({
-                                    "shows": FieldValue.arrayUnion(
-                                        [snapshot.data!.docs[index].id])
-                                  }).then((value) => showList
-                                          .add(snapshot.data!.docs[index].id));
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.add_alarm
-                              // ,
-                                  // color: _subscribed == true
-                                  //     ? Colors.red
-                                  //     : Colors.grey
-                                      ),
-                              onPressed: () {
-                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> AddReminder(
-                                 docid: snapshot.data!.docs[index]
-                               )));
-
-                              },
-                            ),
-                              ],
-                            ) 
-                            
-                            ),
-                      ),
-                    ],
-                  ),
+      body: SingleChildScrollView(
+        child: StreamBuilder(
+            stream: _userStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Text("Something is wrong");
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            );
-          }),
+              }
+              return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (_, index) {
+                  Timestamp showDate =
+                      snapshot.data!.docChanges[index].doc['showDate'];
+                  return GestureDetector(
+                    onTap: () {
+                      if (type == "admin") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => EditTvShow(
+                                      docid: snapshot.data!.docs[index],
+                                    )));
+                      } else {
+                        null;
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        Card(
+                          child: ListTile(
+                              title: Text(snapshot
+                                      .data!.docChanges[index].doc['tvShowName'] +
+                                  " - " +
+                                  DateTime.parse(showDate.toDate().toString())
+                                      .toString()
+                                      .split(' ')[0]),
+                              subtitle: Text(snapshot
+                                  .data!.docChanges[index].doc['description']),
+                              leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(snapshot
+                                      .data!.docChanges[index].doc['image'])),
+                              trailing: Wrap(
+                                spacing: 12,
+                                children: <Widget>[
+                                IconButton(
+                                icon: Icon(Icons.notifications,
+                                    color: showList.contains(
+                                            snapshot.data!.docs[index].id)
+                                        ? Colors.red
+                                        : Colors.grey),
+                                onPressed: () async {
+                                  if (showList
+                                      .contains(snapshot.data!.docs[index].id)) {
+                                    (await FirebaseFirestore.instance
+                                        .collection("user")
+                                        .doc(userId)
+                                        .update({
+                                      "shows": FieldValue.arrayRemove(
+                                          [snapshot.data!.docs[index].id])
+                                    }).then((value) => showList.remove(
+                                            snapshot.data!.docs[index].id)));
+                                    setState(() {
+                                      showList
+                                          .remove(snapshot.data!.docs[index].id);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      showList.add(snapshot.data!.docs[index].id);
+                                    });
+                                    await FirebaseFirestore.instance
+                                        .collection("user")
+                                        .doc(userId)
+                                        .update({
+                                      "shows": FieldValue.arrayUnion(
+                                          [snapshot.data!.docs[index].id])
+                                    }).then((value) => showList
+                                            .add(snapshot.data!.docs[index].id));
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.add_alarm
+                                // ,
+                                    // color: _subscribed == true
+                                    //     ? Colors.red
+                                    //     : Colors.grey
+                                        ),
+                                onPressed: () {
+                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> AddReminder(
+                                   docid: snapshot.data!.docs[index]
+                                 )));
+      
+                                },
+                              ),
+                                ],
+                              ) 
+                              
+                              ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }),
+      ),
     );
   }
 }
