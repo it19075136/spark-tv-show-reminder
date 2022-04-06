@@ -121,7 +121,7 @@ class _EditTvShoState extends State<EditTvShow> {
                       ),
                       ElevatedButton.icon(
                         icon: const Icon(Icons.lock_clock),
-                        label: const Text('Show Date'),
+                        label: const Text('Pick Show Date'),
                         onPressed: () => _openDatePicker(context),
                       ),
                       const SizedBox(
@@ -137,7 +137,7 @@ class _EditTvShoState extends State<EditTvShow> {
                       ),
                       ElevatedButton(
                           onPressed: () => _setTimeForShow(context),
-                          child: const Text('Show Date')),
+                          child: const Text('Pick Show Time')),
                     ]),
                   ),
                 ],
@@ -212,6 +212,7 @@ class _EditTvShoState extends State<EditTvShow> {
                       webBgColor: "#25eb1e",
                       timeInSecForIosWeb: 2,
                       toastLength: Toast.LENGTH_LONG);
+                  Navigator.of(context).pop();
                 });
                 print('Confirmed');
                 Navigator.of(context).pop();
