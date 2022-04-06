@@ -164,7 +164,7 @@ class _AddTvShowState extends State<AddTvShow> {
                       ),
                       ElevatedButton.icon(
                         icon: const Icon(Icons.lock_clock),
-                        label: const Text('Show Date'),
+                        label: const Text('Pick Show Date'),
                         onPressed: () => _openDatePicker(context),
                       ),
                       const SizedBox(
@@ -179,7 +179,7 @@ class _AddTvShowState extends State<AddTvShow> {
                       ),
                       ElevatedButton(
                           onPressed: () => _setTimeForShow(context),
-                          child: const Text('Show Date')),
+                          child: const Text('Pick Show Time')),
                     ]),
                   ),
                 ],
