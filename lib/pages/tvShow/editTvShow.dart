@@ -6,6 +6,7 @@ import '../../constants.dart';
 
 class EditTvShow extends StatefulWidget {
   DocumentSnapshot docid;
+
   EditTvShow({Key? key, required this.docid}) : super(key: key);
 
   @override
@@ -18,6 +19,7 @@ class _EditTvShoState extends State<EditTvShow> {
   TextEditingController _tvShowName = TextEditingController();
   TextEditingController _description = TextEditingController();
   TextEditingController _channelID = TextEditingController();
+
   //Set Date and Time to now Date and Time
   DateTime _showDate = DateTime.now();
   TimeOfDay _showTime = TimeOfDay.now();
@@ -61,8 +63,8 @@ class _EditTvShoState extends State<EditTvShow> {
                     webBgColor: "#25eb1e",
                     timeInSecForIosWeb: 2,
                     toastLength: Toast.LENGTH_LONG);
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => const Channels()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const Channels()));
               });
             },
             child: const Text("Save"),
@@ -214,12 +216,9 @@ class _EditTvShoState extends State<EditTvShow> {
                       webBgColor: "#25eb1e",
                       timeInSecForIosWeb: 2,
                       toastLength: Toast.LENGTH_LONG);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              const Channels()
-                      ));
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => const Channels()));
                 });
                 print('Confirmed');
               },

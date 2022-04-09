@@ -10,6 +10,7 @@ import '../../constants.dart';
 
 class AddTvShow extends StatefulWidget {
   String channelId;
+
   AddTvShow({Key? key, required this.channelId}) : super(key: key);
 
   @override
@@ -82,8 +83,8 @@ class _AddTvShowState extends State<AddTvShow> {
                       timeInSecForIosWeb: 2,
                       toastLength: Toast.LENGTH_LONG);
                 });
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => const Channels()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const Channels()));
               } else {
                 Fluttertoast.showToast(
                     msg: "Tv Show Unsuccessful!",

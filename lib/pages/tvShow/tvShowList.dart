@@ -12,6 +12,7 @@ import '../../reminders/add_reminder.dart';
 
 class TvShowList extends StatefulWidget {
   DocumentSnapshot channelDoc;
+
   TvShowList({Key? key, required this.channelDoc}) : super(key: key);
 
   @override
@@ -22,10 +23,11 @@ class _TvShowListState extends State<TvShowList> {
   final CollectionReference userRef =
       FirebaseFirestore.instance.collection('user');
 
-  CollectionReference reminders = FirebaseFirestore.instance.collection('reminders');
+  CollectionReference reminders =
+      FirebaseFirestore.instance.collection('reminders');
 
   NotificationHelper nhelp = new NotificationHelper();
-  
+
   List reminderList = [];
   List reminderDateList = [];
 
@@ -48,16 +50,14 @@ class _TvShowListState extends State<TvShowList> {
     super.initState();
     getUserData();
     // scheduleReminder();
-
   }
 
-   scheduleReminder( DateTime date, int id, String? showName) async {
-     print("reminder id and the date is");
-     print(date);
-      print(id);
-     
-    var sceduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
+  scheduleReminder(DateTime date, int id, String? showName) async {
+    print("reminder id and the date is");
+    print(date);
+    print(id);
+
+    var sceduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
 
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
@@ -78,17 +78,15 @@ class _TvShowListState extends State<TvShowList> {
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
 
-        print("date.isBefore(DateTime.now())");
-        print(date.isBefore(DateTime.now()));
+    print("date.isBefore(DateTime.now())");
+    print(date.isBefore(DateTime.now()));
 
     if (!date.isBefore(DateTime.now())) {
       await flutterLocalNotificationsPlugin.schedule(id, showName,
           "This is reminder for your show!", date, platformChannelSpecifics);
     }
- 
   }
 
-  
   getUserData() async {
     User? getUser = FirebaseAuth.instance.currentUser;
     userId = getUser!.uid;
@@ -104,23 +102,22 @@ class _TvShowListState extends State<TvShowList> {
       reminderList = user["reminders"];
     });
 
-       reminderList.forEach((element) {
+    reminderList.forEach((element) {
       reminders.get().then((value) => {
             if (value != null)
               {
-                value.docs.asMap().forEach((index,e) {
+                value.docs.asMap().forEach((index, e) {
                   if (element == e.id) {
                     reminderDateList.add(e["reminderDate"]);
-                    scheduleReminder(DateTime.parse(e["reminderDate"]),index,e["tvShowName"]);
+                    scheduleReminder(DateTime.parse(e["reminderDate"]), index,
+                        e["tvShowName"]);
                     // print(e.get("reminderDate"));
-                   
+
                   }
                 })
               }
           });
     });
-
-
   }
 
   @override
@@ -175,6 +172,7 @@ class _TvShowListState extends State<TvShowList> {
                   },
                   child: Column(
                     children: [
+                      snapshot.data!.docs.isNotEmpty ?
                       Card(
                         child: ListTile(
                             title: Text(snapshot
@@ -191,61 +189,62 @@ class _TvShowListState extends State<TvShowList> {
                             trailing: Wrap(
                               spacing: 12,
                               children: <Widget>[
-                              IconButton(
-                              icon: Icon(Icons.notifications,
-                                  color: showList.contains(
-                                          snapshot.data!.docs[index].id)
-                                      ? Colors.red
-                                      : Colors.grey),
-                              onPressed: () async {
-                                if (showList
-                                    .contains(snapshot.data!.docs[index].id)) {
-                                  (await FirebaseFirestore.instance
-                                      .collection("user")
-                                      .doc(userId)
-                                      .update({
-                                    "shows": FieldValue.arrayRemove(
-                                        [snapshot.data!.docs[index].id])
-                                  }).then((value) => showList.remove(
-                                          snapshot.data!.docs[index].id)));
-                                  setState(() {
-                                    showList
-                                        .remove(snapshot.data!.docs[index].id);
-                                  });
-                                } else {
-                                  setState(() {
-                                    showList.add(snapshot.data!.docs[index].id);
-                                  });
-                                  await FirebaseFirestore.instance
-                                      .collection("user")
-                                      .doc(userId)
-                                      .update({
-                                    "shows": FieldValue.arrayUnion(
-                                        [snapshot.data!.docs[index].id])
-                                  }).then((value) => showList
-                                          .add(snapshot.data!.docs[index].id));
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.add_alarm
-                              // ,
-                                  // color: _subscribed == true
-                                  //     ? Colors.red
-                                  //     : Colors.grey
+                                IconButton(
+                                  icon: Icon(Icons.notifications,
+                                      color: showList.contains(
+                                              snapshot.data!.docs[index].id)
+                                          ? Colors.red
+                                          : Colors.grey),
+                                  onPressed: () async {
+                                    if (showList.contains(
+                                        snapshot.data!.docs[index].id)) {
+                                      (await FirebaseFirestore.instance
+                                          .collection("user")
+                                          .doc(userId)
+                                          .update({
+                                        "shows": FieldValue.arrayRemove(
+                                            [snapshot.data!.docs[index].id])
+                                      }).then((value) => showList.remove(
+                                              snapshot.data!.docs[index].id)));
+                                      setState(() {
+                                        showList.remove(
+                                            snapshot.data!.docs[index].id);
+                                      });
+                                    } else {
+                                      setState(() {
+                                        showList
+                                            .add(snapshot.data!.docs[index].id);
+                                      });
+                                      await FirebaseFirestore.instance
+                                          .collection("user")
+                                          .doc(userId)
+                                          .update({
+                                        "shows": FieldValue.arrayUnion(
+                                            [snapshot.data!.docs[index].id])
+                                      }).then((value) => showList.add(
+                                              snapshot.data!.docs[index].id));
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add_alarm
+                                      // ,
+                                      // color: _subscribed == true
+                                      //     ? Colors.red
+                                      //     : Colors.grey
                                       ),
-                              onPressed: () {
-                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> AddReminder(
-                                 docid: snapshot.data!.docs[index]
-                               )));
-
-                              },
-                            ),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => AddReminder(
+                                                docid: snapshot
+                                                    .data!.docs[index])));
+                                  },
+                                ),
                               ],
-                            )
-
-                            ),
-                      ),
+                            )),
+                      ) : CircularProgressIndicator(),
                     ],
                   ),
                 );
